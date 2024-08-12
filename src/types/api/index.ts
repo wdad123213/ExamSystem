@@ -10,8 +10,12 @@ export interface BaseValuse<T> {
 }
 
 
+type Token = {
+  token: string
+}
+
 // 登录
-export type LoginParams = Record<'username' | 'password', string>
+export type LoginParams = Record<'username' | 'password'|'code', string>
 export type LoginResponse = BaseResponse & {
-  token: string;
+  data: Token
 }
