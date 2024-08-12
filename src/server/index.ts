@@ -7,3 +7,7 @@ import {
 export const loginApi = (params: LoginParams) => {
   return request.post<LoginResponse>('/api/login', params)
 }
+
+export const captchaApi = () => {
+  return request.get('/login/captcha')
+}

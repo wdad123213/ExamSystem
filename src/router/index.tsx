@@ -5,6 +5,7 @@ import Auth from "../auth/Auth.tsx"
 
 const Login = lazy(() => import('../pages/login/Login.tsx'))
 const Mine = lazy(() => import('../pages/mine/Mine.tsx'))
+const AddQuestions = lazy(() => import('../pages/addQuestions/AddQuestions.tsx'))
 
 const routes = [
     {
@@ -28,6 +29,13 @@ const routes = [
         element: (
             <Auth>
                 <Mine />
+            </Auth>)
+    },
+    {
+        path:'/addQuestions',
+        element: (
+            <Auth>
+                <AddQuestions />
             </Auth>)
     }
 ]

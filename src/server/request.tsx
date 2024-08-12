@@ -23,7 +23,7 @@ instance.interceptors.response.use(response => {
   if (err.response.status === 401) {
     message.error('用户信息失效，请重新登录!')
     setTimeout(() => {
-      window.location.href = '#/login'
+      window.location.href = '/login'
     }, 0)
   }
   return Promise.reject(err)
