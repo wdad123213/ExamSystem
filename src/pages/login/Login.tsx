@@ -10,6 +10,7 @@ import {LoginParams,LoginResponse} from '../../types/api'
 const Login:React.FC = () => {
   const [img,setImg] = useState('')
   const navigate = useNavigate()
+  const [isteach, setisteach] = useState<boolean>(true)
   
   const onFinish =  async (values: LoginParams) => {
     console.log( values)
@@ -41,12 +42,20 @@ const Login:React.FC = () => {
     // console.log(res)
     setImg(res.data.data.code)
   }
+  const Select = ()=>{
+    setisteach(!isteach)
+    
+   
+
+
+  }
   useEffect(()=>{
     getCode()
   },[])
 
   return (
     <div className={style.login}>
+     
       
       <Form
       name="login"
@@ -54,7 +63,9 @@ const Login:React.FC = () => {
       style={{ maxWidth: 360 }}
       onFinish={onFinish}
       className={style.from}
-    >
+    > <div className={style.Select}>
+        <span onClick={Select}>我是学生</span><span onClick={Select}>我是老师</span>
+      </div>
       <Form.Item
         name="username"
         rules={[{ required: true, message: '请输入你的名字' }]}
