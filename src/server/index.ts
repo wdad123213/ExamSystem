@@ -5,7 +5,7 @@ import {
 } from "../types/api"
 
 export const loginApi = (params: LoginParams) => {
-  return request.post<LoginResponse>('/api/login', params)
+  return request.post<LoginResponse>('/login', params)
 }
 
 export const captchaApi = () => {
