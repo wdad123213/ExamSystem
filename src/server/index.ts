@@ -1,0 +1,9 @@
+import request from './request.tsx'
+import {
+  LoginResponse,
+  LoginParams
+} from "../types/api"
+
+export const loginApi = (params: LoginParams) => {
+  return request.post<LoginResponse>('/api/login', params)
+}
