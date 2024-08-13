@@ -6,6 +6,8 @@ import Auth from "../auth/Auth.tsx"
 import StudentList from "../pages/conponents/studentList/StudentList.tsx"
 import ClassList from "../pages/conponents/classList/ClassList.tsx"
 import Index from "../layout/Index.tsx"
+import ExamList from "../pages/exam/examList/ExamList.tsx"
+
 
 const Login = lazy(() => import('../pages/login/Login.tsx'))
 const Mine = lazy(() => import('../pages/mine/Mine.tsx'))
@@ -46,6 +48,16 @@ const routes = [
             <Index>
                 <Auth>
                     <StudentList />
+                </Auth>
+            </Index>
+        )
+    },
+    {
+        path:'/examList',
+        element: (
+            <Index>
+                <Auth>
+                    <ExamList />
                 </Auth>
             </Index>
         )

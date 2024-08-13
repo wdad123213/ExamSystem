@@ -1,30 +1,27 @@
 import React,{useEffect, useState}from 'react'
 import { UserOutlined,EyeInvisibleOutlined, EyeTwoTone ,LockOutlined} from '@ant-design/icons';
 import { Button,  Form, Input,Space,message} from 'antd';
-import {useNavigate,Navigate} from 'react-router-dom'
+import { useNavigate,useSearchParams} from 'react-router-dom'
 import {LoginParams} from '../../../types/api'
 import {captchaApi,loginApi} from '../../../server/index'
 const LoginSudent:React.FC = () => {
-    const navigate = useNavigate()
     const [img,setImg] = useState('')
+    const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
 
     const onFinish =  async (values: LoginParams) => {
         
         console.log( values)
         try{
           const res = await loginApi(values)
-          let redirectUrl = localStorage.getItem('redirectUrl')
-    
           console.log(res.data)
           if(res.data.code===200){
             console.log(res)
             localStorage.setItem('token',res.data.data.token)
-            // navigate('/')
-            if (redirectUrl) {
-              redirectUrl = redirectUrl || '/';
-              // localStorage.removeItem('redirectUrl');
-              return <Navigate to={redirectUrl} />
-            }
+            const redirectUrl = searchParams.get('redirectUrl') || '/'
+            navigate(redirectUrl)
+
+            
           }
           if(res.data.code===1005){
             message.error(res.data.msg)
@@ -56,9 +53,7 @@ const LoginSudent:React.FC = () => {
     initialValues={{ remember: true }}
     style={{ maxWidth: 360 }}
     onFinish={onFinish}
-    // className={style.from}
     > 
-    
     <Form.Item
         name="username"
         rules={[{ required: true, message: '请输入你的名字' }]}
@@ -68,13 +63,9 @@ const LoginSudent:React.FC = () => {
     <Form.Item
         name="password"
         rules={[{ required: true, message: '请输入密码!' }]}
-        // autocomplete="username"
     >
         <Input.Password
         placeholder="密码"
-        // current-password='123'
-        
-        
         prefix={<LockOutlined /> }
         iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
         />
@@ -84,8 +75,6 @@ const LoginSudent:React.FC = () => {
         name="code"
         rules={[{ required: true, message: '请输入验证码!' }]}
     >
-    
-        
         <Form.Item>
             <Space>
             <Input
@@ -97,17 +86,13 @@ const LoginSudent:React.FC = () => {
             </div>
             </Space>
         </Form.Item>
-    
-        
     </Form.Item>
     <Form.Item>
         <Button block type="primary" htmlType="submit">
         登录
         </Button>
-    
     </Form.Item>
  </Form>
-  
 </div>
   )
 }

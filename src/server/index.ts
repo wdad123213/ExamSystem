@@ -15,3 +15,11 @@ export const captchaApi = () => {
 export const questionList = () => {
   return request.get('/question/list')
 }
+//考试列表
+export const examListApi = ()=>{
+  return request.get('/examination/list?creator=root')
+}
+// 删除考试 http://192.168.28.11:3001/examination/remove
+export const removeExamListApi = ()=>{
+  return request.get('/examination/remove')
+}

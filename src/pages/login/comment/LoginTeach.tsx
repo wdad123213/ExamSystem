@@ -1,28 +1,28 @@
 import React,{useEffect, useState}from 'react'
 import { UserOutlined,EyeInvisibleOutlined, EyeTwoTone ,LockOutlined} from '@ant-design/icons';
 import { Button,  Form, Input,Space,message} from 'antd';
-import {useNavigate} from 'react-router-dom'
 import {LoginParams} from '../../../types/api'
 import {captchaApi,loginApi} from '../../../server/index'
+import {useNavigate,useSearchParams} from 'react-router-dom'
 
 
 
 const LoginTeach:React.FC = () => {
-    const navigate = useNavigate()
-    const [img,setImg] = useState('')
 
+    const [img,setImg] = useState('')
+    const [searchParams] = useSearchParams()
+    const navigate = useNavigate()
     const onFinish =  async (values: LoginParams) => {
-        
-        console.log( values)
+   console.log( values)
         try{
           const res = await loginApi(values)
-    
           console.log(res.data)
           if(res.data.code===200){
             console.log(res)
             localStorage.setItem('token',res.data.data.token)
-            navigate('/')
-          }
+            const redirectUrl = searchParams.get('redirectUrl') || '/'
+            navigate(redirectUrl)
+         }
           if(res.data.code===1005){
             message.error(res.data.msg)
             getCode()
@@ -44,10 +44,6 @@ const LoginTeach:React.FC = () => {
     useEffect(()=>{
         getCode()
     },[])
-
-     
-
-
   return (
     <div >
         <Form
@@ -55,10 +51,9 @@ const LoginTeach:React.FC = () => {
         initialValues={{ remember: true }}
         style={{ maxWidth: 360 }}
         onFinish={onFinish}
-        // className={style.from}
+
         > 
-        
-        <Form.Item
+   <Form.Item
             name="username"
             rules={[{ required: true, message: '请输入你的名字' }]}
         >
@@ -67,13 +62,10 @@ const LoginTeach:React.FC = () => {
         <Form.Item
             name="password"
             rules={[{ required: true, message: '请输入密码!' }]}
-            // autocomplete="username"
         >
             <Input.Password
             placeholder="密码"
-            // current-password='123'
-            
-            
+           
             prefix={<LockOutlined /> }
             iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
             />
@@ -83,8 +75,6 @@ const LoginTeach:React.FC = () => {
             name="code"
             rules={[{ required: true, message: '请输入验证码!' }]}
         >
-        
-            
             <Form.Item>
                 <Space>
                 <Input
@@ -96,15 +86,13 @@ const LoginTeach:React.FC = () => {
                 </div>
                 </Space>
             </Form.Item>
-        
-            
+
         </Form.Item>
         <Form.Item>
             <Button block type="primary" htmlType="submit">
             登录
             </Button>
-        
-        </Form.Item>
+   </Form.Item>
      </Form>
       
     </div>
