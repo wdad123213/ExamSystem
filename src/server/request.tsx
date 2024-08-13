@@ -21,6 +21,7 @@ instance.interceptors.response.use(response => {
   return response
 }, err => {
   console.log(err)
+  
   if (err.response.status === 401) {
     message.error('用户信息失效，请重新登录!')
     setTimeout(() => {

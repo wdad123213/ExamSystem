@@ -5,6 +5,9 @@ type Props = {
 }
 const Auth:React.FC<Props> = (props) => {
   const token = localStorage.getItem('token')
+  console.log(window.location.pathname)
+  const redirectUrl = window.location.pathname;
+  window.localStorage.setItem('redirectUrl', redirectUrl)
   if(!token){
     return <Navigate to="/login" />
   }
