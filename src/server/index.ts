@@ -11,3 +11,7 @@ export const loginApi = (params: LoginParams) => {
 export const captchaApi = () => {
   return request.get('/login/captcha')
 }
+
+export const questionList = () => {
+  return request.get('/question/list')
+}

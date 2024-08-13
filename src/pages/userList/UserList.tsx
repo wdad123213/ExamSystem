@@ -1,15 +1,11 @@
 import React, {useState } from 'react'
 
-const Mine:React.FC = () => {
+const UserList:React.FC = () => {
     const [list,setList] = useState([])
     
-  
-    
-
-
     return (
         <div>UserList</div>
     )
 }
 
-export default Mine;
+export default UserList;
