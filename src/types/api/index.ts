@@ -8,8 +8,6 @@ export interface BaseValuse<T> {
   msg: string;
   values: T
 }
-
-
 type Token = {
   token: string
 }
@@ -19,3 +17,5 @@ export type LoginParams = Record<'username' | 'password'|'code', string>
 export type LoginResponse = BaseResponse & {
   data: Token
 }
+
+//试题库
