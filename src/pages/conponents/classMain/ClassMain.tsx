@@ -119,6 +119,15 @@ const ClassMain: React.FC = () => {
 
     const actionRef = useRef<ActionType>();
 
+    const toSave = (v:any,i:any) => {
+        console.log(v,i)
+        
+    }
+    const toDel = (v:any,i:any) => {
+        console.log(v,i)
+
+    }
+
     const request = async(params: any, sort: any, filter: any) => {
         try{
             const res = await classListApi(params)
@@ -156,6 +165,8 @@ const ClassMain: React.FC = () => {
                 request={request}
                 editable={{
                     type: 'multiple',
+                    onSave: toSave,
+                    onDelete: toDel
                 }}
                 columnsState={{
                     persistenceKey: 'pro-table-singe-demos',
