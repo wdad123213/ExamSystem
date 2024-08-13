@@ -1,102 +1,224 @@
+import React, { useRef, useState, useEffect, Key } from 'react';
+import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
+import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import { ProTable, TableDropdown } from '@ant-design/pro-components';
+import { Button, Dropdown, Space, Tag } from 'antd';
+import style from "../classList/ClassList.module.scss"
+import classNames from 'classnames'
+import { studentListApi } from '../../../server';
 
-import React, { useState } from 'react';
-import { ProList } from '@ant-design/pro-components';
-import { Space, Tag ,Button} from 'antd';
+type T = {
+    
+}
 
-const defaultData = [
+type GithubIssueItem = {
+    url: string | undefined;
+    id: Key;
+    age: Number,
+    avator: String,
+    classId: String,
+    className: String,
+    createTime: Number | String,
+    creator: String,
+    email: String,
+    exams:  T,
+    idCard: String,
+    password: String,
+    role: String,
+    sex: String,
+    status: Number,
+    username: String,
+    __v: Number,
+    _id: String,
+};
+
+const columns: ProColumns<GithubIssueItem>[] = [
     {
-      id: '1',
-      name: '语雀的天空',
-      image:
-        'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
-      desc: '我是一条测试的描述',
+        dataIndex: 'index',
+        valueType: 'indexBorder',
+        width: 48,
     },
     {
-      id: '2',
-      name: 'Ant Design',
-      image:
-        'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
-      desc: '我是一条测试的描述',
+        title: '姓名',
+        dataIndex: 'username',
+        copyable: true,
+        ellipsis: true,
+        tooltip: '标题过长会自动收缩',
+        formItemProps: {
+            rules: [
+                {
+                    required: true,
+                    message: '此项为必填项',
+                },
+            ],
+        },
     },
     {
-      id: '3',
-      name: '蚂蚁金服体验科技',
-      image:
-        'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
-      desc: '我是一条测试的描述',
+        disable: true,
+        title: '性别',
+        dataIndex: 'sex',
+        filters: true,
+        onFilter: true,
+        ellipsis: true,
+        valueType: 'select',
+        valueEnum: {
+            man:{
+                text: '男',
+
+            },
+            weman:{
+                text: '女',
+
+            },
+        },
     },
     {
-      id: '4',
-      name: 'TechUI',
-      image:
-        'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
-      desc: '我是一条测试的描述',
+      title: '年龄',
+      dataIndex: 'age',
+      copyable: true,
+      ellipsis: true,
+      formItemProps: {
+          rules: [
+              {
+                  required: true,
+                  message: '此项为必填项',
+              },
+          ],
+      },
+  },
+    {
+        disable: true,
+        title: '班级',
+        dataIndex: 'className',
+        filters: true,
+        onFilter: true,
+        ellipsis: true,
+        valueType: 'select',
+        valueEnum: {
+            bj: {
+                text: 'nodejs',
+            }
+        },
     },
-  ];
-  
-  type DataItem = (typeof defaultData)[number];
+    {
+        disable: true,
+        title: '创建时间',
+        dataIndex: 'createTime',
+        search: false,
+    },
+    
+   
+    {
+        title: '操作',
+        valueType: 'option',
+        key: 'option',
+        render: (text, record, _, action) => [
+            <a
+                key="editable"
+                onClick={() => {
+                    action?.startEditable?.(record.id);
+                }}
+            >
+                编辑
+            </a>
+        ],
+    },
+];
 
-const StudentMain:React.FC = () => {
-    const [dataSource, setDataSource] = useState<DataItem[]>(defaultData);
 
+const StudentMain: React.FC = () => {
+  const actionRef = useRef<ActionType>();
 
-    return (
-        <ProList<DataItem>
-            
-            toolBarRender={() => {
-                return [
-                    
-                    <div>
-                        <Button key="3" type="primary" style={{float:'right'}}>
-                            新建
-                        </Button>
-                        <div style={{width:'1273px',display:'flex',padding:'20px 20px 20px 10px',borderBottom:'1px solid #f0f0f0',justifyContent:'space-between'}}>
-                            <span>排序</span>
-                            <span>班级名称</span>
-                            <span>老师</span>
-                            <span>科目类别</span>
-                            <span>创建时间</span>
-                            <span>操作</span>
-                        </div>
-                    </div>
-                ];
-            }}
-            rowKey="id"
-            dataSource={dataSource}
-            showActions="hover"
-            editable={{
-                onSave: async (key, record, originRow) => {
-                console.log(key, record, originRow);
-                return true;
-                },
-            }}
-            onDataSourceChange={setDataSource}
-            metas={{
-                title: {
-                dataIndex: 'name',
-                },
-                avatar: {
-                // dataIndex: 'image',
-                editable: false,
-                },
-                description: {
-                // dataIndex: 'desc',
-                },
-                actions: {
-                render: (text, row, index, action) => [
-                    <a
-                    onClick={() => {
-                        action?.startEditable(row.id);
-                    }}
-                    key="link"
+  const request = async(params: any, sort: any, filter: any) => {
+    try{
+        const res = await studentListApi(params)
+        console.log(res)
+        const list = res.data.data?.list || []
+        list.forEach(v => {
+            v.createTime = new Date(v.createTime).toLocaleString() || ''
+        })
+        const data = list.map((item: any) => ({
+            rowKey: item._id,
+            ...item,
+        }))
+        const total = res.data.data?.total || <data className="length"></data>
+        return{
+            data,
+            total,
+            success: true,
+        }
+    }catch (error){
+        console.error('获取用户失败',error)
+        return{
+            success: false,
+            data: [],
+            total: 0,
+        }
+    }
+}
+
+  return (
+    <div className={classNames(style.ClassMain)}>
+            <ProTable<GithubIssueItem>
+                columns={columns}
+                actionRef={actionRef}
+                cardBordered
+                request={request}
+                editable={{
+                    type: 'multiple',
+                }}
+                columnsState={{
+                    persistenceKey: 'pro-table-singe-demos',
+                    persistenceType: 'localStorage',
+                    defaultValue: {
+                        option: { fixed: 'right', disable: true },
+                    },
+                    onChange(value) {
+                        // console.log('value: ', value);
+                    },
+                }}
+                rowKey="id"
+                search={{
+                    labelWidth: 'auto',
+                }}
+                options={{
+                    setting: {
+                        listsHeight: 400,
+                    },
+                }}
+                form={{
+                    // 由于配置了 transform，提交的参数与定义的不同这里需要转化一下
+                    syncToUrl: (values, type) => {
+                        if (type === 'get') {
+                            return {
+                                ...values,
+                                created_at: [values.startTime, values.endTime],
+                            };
+                        }
+                        return values;
+                    },
+                }}
+                pagination={{
+                    pageSize: 5,
+                    // onChange: (page) => console.log(page),
+                }}
+                dateFormatter="string"
+                headerTitle="班级列表"
+                toolBarRender={() => [
+                    <Button
+                        // key="button"
+                        icon={<PlusOutlined />}
+                        onClick={() => {
+                            actionRef.current?.reload();
+                        }}
+                        type="primary"
                     >
-                    编辑
-                    </a>,
-                ],
-                },
-            }}
-        />
-    )
+                        添加学生
+                    </Button>,
+                ]}
+            />
+        </div>
+  )
 }
 
 export default StudentMain;

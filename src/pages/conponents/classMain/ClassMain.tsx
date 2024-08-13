@@ -1,131 +1,211 @@
-import React from 'react'
+import React, { Key, useEffect, useRef, useState } from 'react'
 import style from "../classList/ClassList.module.scss"
+import { classListApi } from '../../../server';
 import classNames from 'classnames'
-import { ProList } from '@ant-design/pro-components';
-import { Button, Space, Tag } from 'antd';
-import request from 'umi-request';
+import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
+import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import { ProTable, TableDropdown } from '@ant-design/pro-components';
+import { Button, Dropdown, Space, Tag } from 'antd';
+
+
+type T = {
+    
+}
+
+type GithubIssueItem = {
+    url: string | undefined;
+    id: Key;
+    classify: String,
+    createTime: Number | String,
+    creator: String,
+    name: String,
+    students:  T,
+    teacher: String,
+    __v: Number,
+    _id: String,
+};
+
+const columns: ProColumns<GithubIssueItem>[] = [
+    {
+        dataIndex: 'index',
+        valueType: 'indexBorder',
+        width: 48,
+    },
+    {
+        title: '班级名称',
+        dataIndex: 'classify',
+        copyable: true,
+        ellipsis: true,
+        tooltip: '标题过长会自动收缩',
+        formItemProps: {
+            rules: [
+                {
+                    required: true,
+                    message: '此项为必填项',
+                },
+            ],
+        },
+    },
+    {
+        disable: true,
+        title: '老师',
+        dataIndex: 'teacher',
+        filters: true,
+        onFilter: true,
+        ellipsis: true,
+        valueType: 'select',
+        valueEnum: {
+            zr:{
+                text: '主任',
+
+            },
+            ls:{
+                text: '老师',
+
+            },
+        },
+    },
+    {
+        disable: true,
+        title: '科目类别',
+        dataIndex: 'name',
+        filters: true,
+        onFilter: true,
+        ellipsis: true,
+        valueType: 'select',
+        valueEnum: {
+            yw: {
+                text: '语文',
+            },
+            sx:{
+                text: '数学',
+
+            },
+            yy:{
+                text: '英语',
+
+            }
+        },
+    },
+    {
+        disable: true,
+        title: '创建时间',
+        dataIndex: 'createTime',
+        search: false,
+    },
+    
+   
+    {
+        title: '操作',
+        valueType: 'option',
+        key: 'option',
+        render: (text, record, _, action) => [
+            <a
+                key="editable"
+                onClick={() => {
+                    action?.startEditable?.(record.id);
+                }}
+            >
+                编辑
+            </a>,
+            <a href={record.url} target="_blank" rel="noopener noreferrer" key="view">
+                查看
+            </a>
+        ],
+    },
+];
 
 const ClassMain: React.FC = () => {
 
+    const actionRef = useRef<ActionType>();
 
-    type GithubIssueItem = {
-        url: string;
-        id: number;
-        number: number;
-        title: string;
-        labels: {
-            name: string;
-            color: string;
-        }[];
-        state: string;
-        comments: number;
-        created_at: string;
-        updated_at: string;
-        closed_at?: string;
-    };
+    const request = async(params: any, sort: any, filter: any) => {
+        try{
+            const res = await classListApi(params)
+            console.log(res)
+            const list = res.data.data?.list || []
+            list.forEach(v => {
+                v.createTime = new Date(v.createTime).toLocaleString() || ''
+            })
+            const data = list.map(item => ({
+                rowKey: item._id,
+                ...item,
+            }))
+            const total = res.data.data?.total || <data className="length"></data>
+            return{
+                data,
+                total,
+                success: true,
+            }
+        }catch (error){
+            console.error('获取用户失败',error)
+            return{
+                success: false,
+                data: [],
+                total: 0,
+            }
+        }
+    }
 
     return (
         <div className={classNames(style.ClassMain)}>
-            <ProList<GithubIssueItem>
-                toolBarRender={() => {
-                    return [
-                        
-                        <div>
-                            <Button key="3" type="primary" style={{float:'right'}}>
-                                新建
-                            </Button>
-                            <div style={{width:'1230px',display:'flex',padding:'20px 20px 20px 10px',borderBottom:'1px solid #f0f0f0',justifyContent:'space-between'}}>
-                                <span>排序</span>
-                                <span>班级名称</span>
-                                <span>老师</span>
-                                <span>科目类别</span>
-                                <span>创建时间</span>
-                                <span>操作</span>
-                            </div>
-                        </div>
-                    ];
+            <ProTable<GithubIssueItem>
+                columns={columns}
+                actionRef={actionRef}
+                cardBordered
+                request={request}
+                editable={{
+                    type: 'multiple',
                 }}
-                search={{}} 
-                rowKey="name"
-                request={async (params = {} as Record<string, any>) =>
-                    request<{
-                        data: GithubIssueItem[];
-                    }>
-                        ('https://proapi.azurewebsites.net/github/issues', { params, })
-                }
+                columnsState={{
+                    persistenceKey: 'pro-table-singe-demos',
+                    persistenceType: 'localStorage',
+                    defaultValue: {
+                        option: { fixed: 'right', disable: true },
+                    },
+                    onChange(value) {
+                        // console.log('value: ', value);
+                    },
+                }}
+                rowKey="id"
+                search={{
+                    labelWidth: 'auto',
+                }}
+                options={{
+                    setting: {
+                        listsHeight: 400,
+                    },
+                }}
+                form={{
+                    // 由于配置了 transform，提交的参数与定义的不同这里需要转化一下
+                    syncToUrl: (values, type) => {
+                        if (type === 'get') {
+                            return {
+                                ...values,
+                                created_at: [values.startTime, values.endTime],
+                            };
+                        }
+                        return values;
+                    },
+                }}
                 pagination={{
                     pageSize: 5,
+                    // onChange: (page) => console.log(page),
                 }}
-                showActions="hover"
-                metas={{
-                    title: {
-                        dataIndex: 'user',
-                        title: '班级名称',
-                    },
-                    teacher: {
-                        // 自己扩展的字段，主要用于筛选，不在列表中显示
-                        title: '老师',
-                        valueType: 'select',
-                        valueEnum: {
-                            all: { text: '全部', status: 'Tteacher' },
-                            open: {
-                                text: '未解决',
-                                status: 'YWteacher',
-                            },
-                            closed: {
-                                text: '已解决',
-                                status: 'SXteacher',
-                            },
-                            processing: {
-                                text: '解决中',
-                                status: 'YYteacher',
-                            },
-                        },
-                    },
-                    course: {
-                        // 自己扩展的字段，主要用于筛选，不在列表中显示
-                        title: '科目类别',
-                        valueType: 'select',
-                        valueEnum: {
-                            all: { text: '全部', status: 'cur' },
-                            open: {
-                                text: '语文',
-                                status: 'YW',
-                            },
-                            closed: {
-                                text: '数学',
-                                status: 'SX',
-                            },
-                            processing: {
-                                text: '英语',
-                                status: 'YY',
-                            },
-                        },
-                    },
-                    actions: {
-                        render: (text, row) => [
-                            <a
-                                href={row.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                key="link"
-                            >
-                                编辑
-                            </a>,
-                            <a
-                                href={row.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                key="view"
-                            >
-                                查看
-                            </a>,
-                        ],
-                        search: false,
-                    },
-
-                }}
-
+                dateFormatter="string"
+                headerTitle="班级列表"
+                toolBarRender={() => [
+                    <Button
+                        // key="button"
+                        icon={<PlusOutlined />}
+                        onClick={() => {
+                            actionRef.current?.reload();
+                        }}
+                        type="primary"
+                    >
+                        新建班级
+                    </Button>,
+                ]}
             />
         </div>
     )
