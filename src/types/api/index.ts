@@ -19,3 +19,8 @@ export type LoginResponse = BaseResponse & {
 }
 
 //试题库
+// SearchParams
+export type SearchParams = Record<'page' | 'pageSize' | 'keyWord' | 'type' | 'name', string>
+export type RemoveParams = {
+  id:string
+}

@@ -1,7 +1,10 @@
 import { Button, Space, Input, Select } from 'antd';
 import style from './Item.module.scss'
 import QuestionItem from './QuestionItem';
-const Item: React.FC = () => {
+interface MyComponentProps { }
+const Item: React.FC = (props: MyComponentProps) => {
+  const search = () => {
+  }
   return (
     <div className={style.box}>
       <Space>
@@ -12,7 +15,7 @@ const Item: React.FC = () => {
           试题搜索:
           <Space.Compact style={{ width: '250px', margin: '10px' }}>
             <Input />
-            <Button type="primary">Submit</Button>
+            <Button type="primary" onClick={search}>搜索</Button>
           </Space.Compact></div>
         <div>
           试题分类:
@@ -47,7 +50,6 @@ const Item: React.FC = () => {
       </header>
       <main>
         <QuestionItem>
-          
         </QuestionItem>
       </main>
     </div>

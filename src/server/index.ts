@@ -1,7 +1,8 @@
 import request from './request.tsx'
 import {
   LoginResponse,
-  LoginParams
+  LoginParams,
+  RemoveParams
 } from "../types/api"
 
 export const loginApi = (params: LoginParams) => {
@@ -15,3 +16,15 @@ export const captchaApi = () => {
 export const questionList = () => {
   return request.get('/question/list')
 }
+
+export const searchList = (type:string) => {
+  return request.get(`/question/type/list?type=${type}`)
+}
+
+export const removeApi = (params:RemoveParams) => {
+  return request.post(`/question/remove`, params)
+}
+export const updateApi = (id: string) => {
+  return request.post(`/question/update?${id}`)
+}
+

@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import type { TableProps } from 'antd';
-import { Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
-import { questionList } from '../../../server';
-
+import { QuestionCircleOutlined } from '@ant-design/icons';
+import { Form, Input, InputNumber, Popconfirm, Table, Typography, Button, Space, Drawer } from 'antd';
+import { questionList, updateApi, removeApi } from '../../../server';
+import Item from './Item';
+import type { DrawerProps } from 'antd';
 interface Item {
     key: string;
-    name: string;
-    age: number;
-    address: string;
+    question: string;
+    type: string;
+    classify: string;
+    time: string;
 }
-
-const originData: Item[] = [];
-for (let i = 0; i < 100; i++) {
-    originData.push({
-        key: i.toString(),
-        name: `Edward ${i}`,
-        age: 32,
-        address: `London Park no. ${i}`,
-    });
+interface ItemType {
+    _id: string;
+    question: string;
+    classify: number;
+    type: string;
+    options: string[]
+    answer:string
 }
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
@@ -39,7 +40,6 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     ...restProps
 }) => {
     const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
-
     return (
         <td {...restProps}>
             {editing ? (
@@ -63,35 +63,73 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 };
 
 const QuestionItem: React.FC = () => {
-    const [form] = Form.useForm();
-    const [data, setData] = useState(originData);
-    const [editingKey, setEditingKey] = useState('');
-    const getList = async () => {
-        const res = await questionList()
-        console.log(res)
-    }
-    useEffect(() => {
-        getList()
-        // console.log(page,pageSize)
-    }, [])
-    // const onChange = () = {
-        
-    // }
-    const isEditing = (record: Item) => record.key === editingKey;
-
-    const edit = (record: Partial<Item> & { key: React.Key }) => {
-        form.setFieldsValue({ name: '', age: '', address: '', ...record });
-        setEditingKey(record.key);
+    const [detail, setDetail] = useState({})
+    const [open, setOpen] = useState(false);
+    const [size, setSize] = useState<DrawerProps['size']>();
+    const showDefaultDrawer = async(record: Partial<Item> & { key: React.Key }) => {
+        // console.log(record)
+        await setDetail(record)
+        console.log(detail)
+        setSize('default');
+        setOpen(true);
+    };
+    const onClose = () => {
+        setOpen(false);
     };
 
+    const [loading, setLoading] = useState(false);
+    let originData: Item[] = [];
+    const [form] = Form.useForm();
+    const [data, setData] = useState<Item[]>([]);
+    // const [data, setData] = useState(originData);
+    const [editingKey, setEditingKey] = useState('');
+    const getList = async () => {
+        setLoading(true);
+        try {
+            const res = await questionList();
+            console.log(res.data.data.list);
+            const list = res.data.data.list;
+            console.log(list[0])
+            originData = list.map((item: ItemType) => ({
+                key: item._id,
+                question: item.question,
+                classify: item.classify,
+                time: new Date(Date.now()).toLocaleString(),
+                type: item.type,
+                options: item.options,
+                answer:item.answer
+            }));
+            setData(originData);
+        } catch (error) {
+            console.error('Failed to fetch data:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    useEffect(() => {
+        getList()
+    }, [])
+
+    const isEditing = (record: Item) => record.key === editingKey;
+    const edit = async (record: Partial<Item> & { key: React.Key }) => {
+        form.setFieldsValue({ name: '', age: '', address: '', ...record });
+        setEditingKey(record.key);
+        console.log(record.key)
+        const res = await updateApi(record.key)
+        console.log(res)
+    };
+    const del = async (record: Partial<Item> & { key: React.Key }) => {
+        const id = record.key
+        await removeApi({ id })
+        getList()
+        // console.log(record.key,res)
+    }
     const cancel = () => {
         setEditingKey('');
     };
-
     const save = async (key: React.Key) => {
         try {
             const row = (await form.validateFields()) as Item;
-
             const newData = [...data];
             const index = newData.findIndex((item) => key === item.key);
             if (index > -1) {
@@ -111,28 +149,40 @@ const QuestionItem: React.FC = () => {
             console.log('Validate Failed:', errInfo);
         }
     };
-
     const columns = [
         {
+            align: 'center',
             title: '试题列表',
-            dataIndex: 'name',
-            width: '25%',
+            dataIndex: 'question',
+            width: '15%',
+            editable: true,
+            ellipsis: true
+        },
+        {
+            align: 'center',
+            title: '分类',
+            dataIndex: 'classify',
+            width: '10%',
             editable: true,
         },
         {
-            title: '分类',
-            dataIndex: 'age',
+            align: 'center',
+            title: '题型',
+            dataIndex: 'type',
             width: '15%',
             editable: true,
         },
         {
-            title: '题型',
-            dataIndex: 'address',
-            width: '40%',
+            align: 'center',
+            title: '创建时间',
+            dataIndex: 'time',
+            width: '30%',
             editable: true,
+
         },
         {
-            title: 'operation',
+            align: 'center',
+            title: '操作',
             dataIndex: 'operation',
             render: (_: any, record: Item) => {
                 const editable = isEditing(record);
@@ -147,9 +197,50 @@ const QuestionItem: React.FC = () => {
                         </Popconfirm>
                     </span>
                 ) : (
-                        <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)} >
-                        编辑
-                    </Typography.Link>
+                    <>
+                        <Space
+                            size='middle'>
+                            <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)} >
+                                编辑
+                            </Typography.Link>
+                            <Popconfirm
+                                title="Delete the task"
+                                description="确认删除此项吗?"
+                                icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                                okText='确定'
+                                cancelText='取消'
+                                onConfirm={() => { del(record) }}
+                            >
+                                <Button
+                                    danger
+                                >删除</Button>
+                            </Popconfirm>
+                                <Space>
+                                    <Button type="primary" onClick={()=>showDefaultDrawer(record)}>
+                                        试卷预览
+                                    </Button>
+                                </Space>
+                                <Drawer
+                                    title={`试卷预览`}
+                                    placement="right"
+                                    size={size}
+                                    onClose={onClose}
+                                    open={open}
+                                    rootStyle={{ opacity: 0.25 }}
+                                    extra={
+                                        <Space>
+                                            <Button onClick={onClose}>Cancel</Button>
+                                            <Button type="primary" onClick={onClose}>
+                                                OK
+                                            </Button>
+                                        </Space>
+                                    }
+                                >
+                                </Drawer>
+                        </Space>
+
+                    </>
+
                 );
             },
         },
@@ -167,6 +258,7 @@ const QuestionItem: React.FC = () => {
                 dataIndex: col.dataIndex,
                 title: col.title,
                 editing: isEditing(record),
+
             }),
         };
     });
@@ -179,13 +271,11 @@ const QuestionItem: React.FC = () => {
                         cell: EditableCell,
                     },
                 }}
+                loading={loading}
                 bordered
                 dataSource={data}
                 columns={mergedColumns}
                 rowClassName="editable-row"
-                pagination={{
-                    onChange: cancel,
-                }}
             />
         </Form>
     );
