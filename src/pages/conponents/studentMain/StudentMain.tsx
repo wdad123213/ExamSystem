@@ -116,7 +116,7 @@ const columns: ProColumns<GithubIssueItem>[] = [
             <a
                 key="editable"
                 onClick={() => {
-                    action?.startEditable?.(record.id);
+                    action?.startEditable?.(record._id);
                 }}
             >
                 编辑
@@ -177,7 +177,7 @@ const StudentMain: React.FC = () => {
                         // console.log('value: ', value);
                     },
                 }}
-                rowKey="id"
+                rowKey="_id"
                 search={{
                     labelWidth: 'auto',
                 }}
