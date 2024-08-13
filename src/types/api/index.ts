@@ -19,3 +19,13 @@ export type LoginParams = Record<'username' | 'password'|'code', string>
 export type LoginResponse = BaseResponse & {
   data: Token
 }
+
+// 用户信息
+export type userInfo = {
+  _id: string,
+  username: string,
+  password: string,
+  status: number
+  __v: number
+  avator?: string
+}

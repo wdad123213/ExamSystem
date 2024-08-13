@@ -15,3 +15,7 @@ export const captchaApi = () => {
 export const questionList = () => {
   return request.get('/question/list')
 }
+
+export const userInfoApi = () => {
+  return request.get('/user/info')
+}
