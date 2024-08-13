@@ -1,9 +1,11 @@
 import {Navigate} from "react-router-dom"
-import UserList from "../pages/userList/UserList.tsx"
+import Home from "../pages/home/Home.tsx"
 import {lazy} from "react"
 import Auth from "../auth/Auth.tsx"
+
 import StudentList from "../pages/conponents/studentList/StudentList.tsx"
 import ClassList from "../pages/conponents/classList/ClassList.tsx"
+import Index from "../layout/Index.tsx"
 
 const Login = lazy(() => import('../pages/login/Login.tsx'))
 const Mine = lazy(() => import('../pages/mine/Mine.tsx'))
@@ -13,13 +15,13 @@ const AddQuestions = lazy(() => import('../pages/addQuestions/AddQuestions.tsx')
 const routes = [
     {
         path:'/',
-        element:<Navigate to='/userList' />
+        element:<Navigate to='/home' />
     },
     {
-        path:'/userList',
+        path:'/home',
         element: (
             <Auth>
-                <UserList />
+                <Home />
             </Auth>
         )
     },
@@ -30,17 +32,22 @@ const routes = [
     {
         path:'/classList',
         element: (
-            <Auth>
-                <ClassList />
-            </Auth>
+            <Index>
+                <Auth>
+                    <ClassList />
+                </Auth>
+            </Index>
+            
         )
     },
     {
         path:'/studentList',
         element: (
-            <Auth>
-                <StudentList />
-            </Auth>
+            <Index>
+                <Auth>
+                    <StudentList />
+                </Auth>
+            </Index>
         )
     },
     {
@@ -48,21 +55,28 @@ const routes = [
         element: (
             <Auth>
                 <Mine />
-            </Auth>)
+            </Auth>
+        )
     },
     {
         path: '/question',
         element: (
-            <Auth>
-                <Question />
-            </Auth>)
+            <Index>
+                <Auth>
+                    <Question />
+                </Auth>
+            </Index>
+        )
     },
     {
         path:'/addQuestions',
         element: (
-            <Auth>
-                <AddQuestions />
-            </Auth>)
+            <Index>
+                <Auth>
+                    <AddQuestions />
+                </Auth>
+            </Index>
+        )
     }
 ]
 
