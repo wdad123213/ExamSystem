@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import style from './login.module.scss'
-import { UserOutlined, EyeInvisibleOutlined, EyeTwoTone, LockOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Space, message } from 'antd';
-import { captchaApi, loginApi } from '../../server/index'
-import { useNavigate } from 'react-router-dom'
-import { LoginParams, LoginResponse } from '../../types/api'
-  
-const Login: React.FC = () => {
-  const [img, setImg] = useState('')
+import { UserOutlined,EyeInvisibleOutlined, EyeTwoTone ,LockOutlined} from '@ant-design/icons';
+import { Button,  Form, Input,Space,message } from 'antd';
+import {captchaApi,loginApi} from '../../server/index'
+import {useNavigate} from 'react-router-dom'
+import {LoginParams} from '../../types/api'
+
+
+const Login:React.FC = () => {
+  const [img,setImg] = useState('')
   const navigate = useNavigate()
   const [isteach, setisteach] = useState<boolean>(true)
   const onFinish = async (values: LoginParams) => {
