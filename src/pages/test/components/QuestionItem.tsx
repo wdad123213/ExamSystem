@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import type { TableProps } from 'antd';
 import { Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
-import { questionList} from "../../../server"
-
+import { questionList } from '../../../server';
 interface Item {
     key: string;
     name: string;
@@ -66,17 +65,7 @@ const QuestionItem: React.FC = () => {
     const [form] = Form.useForm();
     const [data, setData] = useState(originData);
     const [editingKey, setEditingKey] = useState('');
-    const getList = async () => {
-        const res = await questionList()
-        console.log(res)
-    }
-    useEffect(() => {
-        getList()
-        // console.log(page,pageSize)
-    }, [])
-    // const onChange = () = {
-        
-    // }
+
     const isEditing = (record: Item) => record.key === editingKey;
 
     const edit = (record: Partial<Item> & { key: React.Key }) => {
@@ -139,6 +128,7 @@ const QuestionItem: React.FC = () => {
                 return editable ? (
                     <span>
                         <Typography.Link onClick={() => save(record.key)} style={{ marginInlineEnd: 8 }}
+                           
                         >
                             保存
                         </Typography.Link>

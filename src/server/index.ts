@@ -15,3 +15,16 @@ export const captchaApi = () => {
 export const questionList = () => {
   return request.get('/question/list')
 }
+
+export const classListApi = () => {
+  return request.get('/studentGroup/list')
+}
+
+export const studentListApi = () => {
+  return request.get('/student/list')
+}
+
+export const userInfoApi = () => {
+  return request.get('/user/info')
+}
+
