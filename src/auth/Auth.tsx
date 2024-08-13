@@ -1,10 +1,13 @@
-import {Navigate} from "react-router-dom"
+import {Navigate, useLocation} from "react-router-dom"
 
 type Props = {
   children: JSX.Element
 }
 const Auth:React.FC<Props> = (props) => {
   const token = localStorage.getItem('token')
+  console.log(window.location.pathname)
+  const redirectUrl = window.location.pathname;
+  window.localStorage.setItem('redirectUrl', redirectUrl)
   if(!token){
     return <Navigate to="/login" />
   }
