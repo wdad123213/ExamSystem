@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { TableProps } from 'antd';
 import { Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
-
+import { questionList } from '../../../server';
 interface Item {
     key: string;
     name: string;
@@ -103,19 +103,19 @@ const QuestionItem: React.FC = () => {
 
     const columns = [
         {
-            title: 'name',
+            title: '试题列表',
             dataIndex: 'name',
             width: '25%',
             editable: true,
         },
         {
-            title: 'age',
+            title: '分类',
             dataIndex: 'age',
             width: '15%',
             editable: true,
         },
         {
-            title: 'address',
+            title: '题型',
             dataIndex: 'address',
             width: '40%',
             editable: true,
@@ -127,16 +127,18 @@ const QuestionItem: React.FC = () => {
                 const editable = isEditing(record);
                 return editable ? (
                     <span>
-                        <Typography.Link onClick={() => save(record.key)} style={{ marginInlineEnd: 8 }}>
-                            Save
+                        <Typography.Link onClick={() => save(record.key)} style={{ marginInlineEnd: 8 }}
+                           
+                        >
+                            保存
                         </Typography.Link>
-                        <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                            <a>Cancel</a>
+                        <Popconfirm title="确认取消吗?" onConfirm={cancel} okText='确认' cancelText='取消' >
+                            <a>取消</a>
                         </Popconfirm>
                     </span>
                 ) : (
-                    <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
-                        Edit
+                        <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)} >
+                        编辑
                     </Typography.Link>
                 );
             },
