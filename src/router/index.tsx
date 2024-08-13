@@ -2,6 +2,7 @@ import {Navigate} from "react-router-dom"
 import UserList from "../pages/userList/UserList.tsx"
 import {lazy} from "react"
 import Auth from "../auth/Auth.tsx"
+import Index from "../layout/Index.tsx"
 
 const Login = lazy(() => import('../pages/login/Login.tsx'))
 const Mine = lazy(() => import('../pages/mine/Mine.tsx'))
@@ -29,14 +30,18 @@ const routes = [
         element: (
             <Auth>
                 <Mine />
-            </Auth>)
+            </Auth>
+        )
     },
     {
         path:'/addQuestions',
         element: (
-            <Auth>
-                <AddQuestions />
-            </Auth>)
+            <Index>
+                <Auth>
+                    <AddQuestions />
+                </Auth>
+            </Index>
+        )
     }
 ]
 
