@@ -15,6 +15,7 @@ export const captchaApi = () => {
 export const questionList = () => {
   return request.get('/question/list')
 }
+<<<<<<< HEAD
 //考试列表
 export const examListApi = ()=>{
   return request.get('/examination/list?creator=root')
@@ -23,3 +24,18 @@ export const examListApi = ()=>{
 export const removeExamListApi = ()=>{
   return request.get('/examination/remove')
 }
+=======
+
+export const classListApi = () => {
+  return request.get('/studentGroup/list')
+}
+
+export const studentListApi = () => {
+  return request.get('/student/list')
+}
+
+export const userInfoApi = () => {
+  return request.get('/user/info')
+}
+
+>>>>>>> 088b2143cd72951032fcf4f11f5986e1f6c74c53

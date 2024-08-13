@@ -9,12 +9,7 @@ import style from './ClassList.module.scss'
 const ClassList:React.FC = () => {
     return (
         <div>
-            <header>
-                <Navs />
-            </header>
-
             <main style={{background:"#f0f2f5",padding:"30px 30px 50px"}} className={classNames(style.classMain)}>
-                {/* <ClassInps /> */}
                 <ClassMain />
             </main>
         </div>
