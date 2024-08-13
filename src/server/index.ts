@@ -27,4 +27,15 @@ export const removeApi = (params:RemoveParams) => {
 export const updateApi = (id: string) => {
   return request.post(`/question/update?${id}`)
 }
+export const classListApi = () => {
+  return request.get('/studentGroup/list')
+}
+
+export const studentListApi = () => {
+  return request.get('/student/list')
+}
+
+export const userInfoApi = () => {
+  return request.get('/user/info')
+}
 
