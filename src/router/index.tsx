@@ -7,6 +7,7 @@ import ClassList from "../pages/conponents/classList/ClassList.tsx"
 
 const Login = lazy(() => import('../pages/login/Login.tsx'))
 const Mine = lazy(() => import('../pages/mine/Mine.tsx'))
+const Question = lazy(() =>import('../pages/question/Question.tsx'))
 const AddQuestions = lazy(() => import('../pages/addQuestions/AddQuestions.tsx'))
 
 const routes = [
@@ -47,6 +48,13 @@ const routes = [
         element: (
             <Auth>
                 <Mine />
+            </Auth>)
+    },
+    {
+        path: '/question',
+        element: (
+            <Auth>
+                <Question />
             </Auth>)
     },
     {
