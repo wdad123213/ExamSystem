@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import type { TableProps } from 'antd';
 import { Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
-import { questionList} from "../../../server"
-
+import { questionList } from '../../../server';
 interface Item {
     key: string;
     name: string;
