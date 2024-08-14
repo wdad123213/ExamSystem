@@ -6,7 +6,9 @@ import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable, TableDropdown } from '@ant-design/pro-components';
 import { Button, Dropdown, Space, Tag } from 'antd';
-
+import { classDelApi } from '../../../server';
+import { classSaveApi } from '../../../server';
+import { classParams } from '../../../types/api';
 
 type T = {
     
@@ -22,8 +24,16 @@ type GithubIssueItem = {
     students:  T,
     teacher: String,
     __v: Number,
-    _id: String,
+    _id: string,
 };
+
+type classItem = {
+    classify: String,
+    _id: String | Number,
+    name: String,
+    students:  T,
+    teacher: String,
+}
 
 const columns: ProColumns<GithubIssueItem>[] = [
     {
@@ -119,28 +129,22 @@ const ClassMain: React.FC = () => {
 
     const actionRef = useRef<ActionType>();
 
-    const toSave = (v:any,i:any) => {
-        console.log(v,i)
-        
-    }
-    const toDel = (v:any,i:any) => {
-        console.log(v,i)
-
-    }
-
-    const request = async(params: any, sort: any, filter: any) => {
+    const request = async(params: classParams, sort: any, filter: any) => {
         try{
             const res = await classListApi(params)
             console.log(res)
             const list = res.data.data?.list || []
-            list.forEach(v => {
+            list.forEach((v: { createTime: string | number | Date; }) => {
                 v.createTime = new Date(v.createTime).toLocaleString() || ''
             })
-            const data = list.map(item => ({
+            const data = list.map((item: { _id: any; }) => ({
                 rowKey: item._id,
                 ...item,
             }))
-            const total = res.data.data?.total || <data className="length"></data>
+
+            console.log(data)
+            
+            const total = res.data.data?.total || data.length
             return{
                 data,
                 total,
@@ -155,6 +159,26 @@ const ClassMain: React.FC = () => {
             }
         }
     }
+
+    const toSave = async (v:any,i:classItem) => {
+        const res = await classSaveApi(v,{...i,
+            createTime:undefined,
+            creator:undefined,
+            rowKey:undefined,
+            __v:undefined,
+            _id:undefined,
+            index:undefined
+        })
+        console.log(res)
+        
+    }
+
+    const toDel = async (v:any,i:any) => {
+        const res = await classDelApi(v)
+        console.log(v)
+
+    }
+
 
     return (
         <div className={classNames(style.ClassMain)}>
@@ -207,7 +231,7 @@ const ClassMain: React.FC = () => {
                 headerTitle="班级列表"
                 toolBarRender={() => [
                     <Button
-                        // key="button"
+                        key="button"
                         icon={<PlusOutlined />}
                         onClick={() => {
                             actionRef.current?.reload();

@@ -29,3 +29,24 @@ export type userInfo = {
   __v: number
   avator?: string
 }
+
+export type classParams = {
+  page: String,
+  pagesize: String,
+  name: String,
+  teacher: String,
+  classify: String,
+
+}
+
+export type studentParams = {
+  username: String,
+  sex: String,
+  age: String,
+  className: String,
+  pageSize: String,
+  current: String,
+  // page: String,
+
+}
+
