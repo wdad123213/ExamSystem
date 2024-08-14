@@ -1,24 +1,49 @@
 import React, { useEffect, useState } from 'react'
-import { Space, Table, Tag, Input, Typography,Button, Drawer , Divider, Flex, Radio  } from 'antd';
+import { Table,  Input, Typography,Button, Drawer , Flex, Radio, Select, Space } from 'antd';
 import type { TableProps } from 'antd';
 import {UpOutlined ,DownOutlined } from '@ant-design/icons'
 import style from './ExamLisr.module.scss'
 import type { ConfigProviderProps } from 'antd';
-import { examListApi } from '../../../server/index'
-import { DataType} from '../../../types/api'
-import ExamDrawer from '../comment/examDrawer';
-import userStore from '../../../store/models/userStore';
+import { examListApi ,removeExamListApi,examinationlApi} from '../../../../server/index'
+import { ExamListDataType} from '../../../../types/api'
+import ExamDrawer from '../examDrawer/examDrawer';
+import userStore from '../../../../store/models/userStore';
 type SizeType = ConfigProviderProps['componentSize'];
 // const { Search } = Input;
-export type FormVal = Partial<DataType>
-const ExamList: React.FC = () => {
+export type FormVal = Partial<ExamListDataType>
+const ExamList: React.FC = (props) => {
+  const [obj1,setobj1] = useState('')
+  const [obj2,setobj2] = useState('')
   const [open, setOpen] = useState(false);
+  const [searchRes,getSearchRes] = useState('')
 
   const [size, setSize] = useState<SizeType>('large'); // default is 'middle'
   const [isShow, setIsShow] = useState(false)
   const [examList, setExamList] = useState([])
   const [stateTime, getStateTime] = useState('')
   const [examQuest,setExamQuest] = useState([])
+  const [reject,setReject] = useState([])
+
+  // const toexcel =()=>{
+  //   console.log(pages.)
+  // }
+
+
+ const [resList,setResList]= useState(
+  { 
+    name: '',
+    classify: '',
+    creator: '',
+    createTime: '',
+    status:'',
+    examiner:'',
+    group:'',
+    startTime:  '',
+    endTime: '',
+    
+  }
+)
+
   examList.forEach((item:any)  => {
     item.key=item._id
     item.startTime = new Date(item.startTime).toLocaleString() || ''
@@ -39,7 +64,7 @@ const ExamList: React.FC = () => {
 
   const awlist = async () => {
     const res = await examListApi()
-    console.log(res.data.data.list)
+    // console.log(res.data.data.list)
     // const newArr = [res.data.data.list]
     setExamList(res.data.data.list)
   }
@@ -48,32 +73,72 @@ const ExamList: React.FC = () => {
     setIsShow(!isShow)
    
   }
- const [resList,setResList]= useState(
-   { 
-    name: '',
-    classify: '',
-    creator: '',
-    createTime: '',
-    status:'',
-    examiner:'',
-    group:'',
-    startTime:  '',
-    endTime: '',
-    
+  // 搜索内容
+  const examination = async (v:any)=>{
+    const res = await examinationlApi(v)
+    // console.log(res.data.data.list)
+    setExamList(res.data.data.list)
   }
-  
-)
 
+
+//  搜索
   const handleClickGetContent = () => {
-    console.log('输入的内容:', resList);
-    // 这里可以执行其他逻辑，如发送数据到服务器等
+    // console.log('输入的内容:', resList);
+    const arr = Object.keys(resList)
+    // const obj =""
+    
+    
+    const res = {}
+    arr.forEach(v => {
+      if(resList[v]) res[v] = resList[v]
+    })
+    // console.log( Object.keys(res));
+    // console.log( Object.values(res));
+    // console.log(res)
+    if(Object.keys(res)){
+      if(Object.keys(res).length>1){
+        // let obj = {}
+        Object.keys(res).map((item,i)=>{
+          if(i< Object.keys(res).length-1){
+            setobj1( item+'='+Object.values(res)[i]+'&')
+            console.log(obj1)
+          }else{
+            setobj2( item+'='+Object.values(res)[i])
+            console.log(obj2)
+          }
+          const count =`${ obj1}${obj2}`
+          console.log(count)
+          examination(count)
+          // console.log(obj1+obj2)
+        }) 
+      }else{
+        const obj=(Object.keys(res)+'='+Object.values(res))
+        examination(obj)
+      }
+    }else{
+      setResList("")
+    }
+    
+     
+    // console.log(obj)
+    
+   
+
   };
+
   const reset = ()=>{
-    setResList('')
-    //onSearch({})
+    setResList("")
+    
+  
 
   }
+ 
+  // 删除
+  const detal = (e)=>{
+    console.log(e)
+    // removeExamListApi(e)
 
+  }
 
   useEffect(() => {
     awlist()
@@ -81,7 +146,7 @@ const ExamList: React.FC = () => {
   }, [])
   
 
-  const columns: TableProps<DataType>['columns'] = [
+  const columns: TableProps<ExamListDataType>['columns'] = [
 
     {
       title: '考试名称',
@@ -146,7 +211,11 @@ const ExamList: React.FC = () => {
         >
           预览试卷
         </Button>,
-        <Button rel="noopener noreferrer" key="view">
+        <Button 
+          rel="noopener noreferrer" 
+          key="view"
+          onClick={()=>detal(action._id)}
+        >
           删除
         </Button>,
 
@@ -155,13 +224,14 @@ const ExamList: React.FC = () => {
     {
       title: '操作',
       // dataIndex: 'tags',
-      render: () =>
-        <button>
+      render: (_, action) =>
+        <button onClick={()=>props.changePageExam(action._id)}>
           成绩分析
         </button>
 
     }
   ];
+  
 
 
 
@@ -180,6 +250,7 @@ const ExamList: React.FC = () => {
 
             <div style={{marginLeft:'50px'}}>
               <Typography.Title level={5} >科目分类</Typography.Title>
+             
               <Input placeholder="请选择" value={resList.classify}   onChange={(e)=>setResList({...resList,classify:e.target.value})}/>
             </div>
             <div style={{marginLeft:'50px'}}>

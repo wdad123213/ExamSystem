@@ -21,7 +21,7 @@ export type LoginResponse = BaseResponse & {
 }
 
 
-export interface DataType {
+export interface ExamListDataType {
   key?: string;
   classify?: string
   createTime?: string
@@ -44,4 +44,14 @@ export type userInfo = {
   status: number
   __v: number
   avator?: string
+}
+// 创建考试
+export type createExam={
+  name:string,
+  classify: string,
+  examId: string,
+  group:string,
+  examiner:string,
+  startTime: number,
+  endTime:number
 }
