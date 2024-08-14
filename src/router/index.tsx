@@ -28,9 +28,9 @@ const routes = [
         path:'/home',
         element: (
           <Index>
-            <Auth>
-              <Home />
-            </Auth>
+              <Auth>
+                  <Home />
+              </Auth>
           </Index>
         )
     },
@@ -133,9 +133,9 @@ const routes = [
     path: '/user',
     element: (
         <Index>
-          <Auth>
-            <User />
-          </Auth>
+            <Auth>
+                <User />
+            </Auth>
         </Index>
     )
   },
@@ -143,9 +143,9 @@ const routes = [
     path: '/role',
     element: (
         <Index>
-          <Auth>
-            <Role />
-          </Auth>
+            <Auth>
+                <Role />
+            </Auth>
         </Index>
     )
   },
@@ -153,9 +153,9 @@ const routes = [
     path: '/permissions',
     element: (
         <Index>
-          <Auth>
-            <Permissions />
-          </Auth>
+            <Auth>
+                <Permissions />
+            </Auth>
         </Index>
     )
   },

@@ -165,7 +165,6 @@ const Index: React.FC<Props> = (prop) => {
           <Header style={{ padding: 0, background: colorBgContainer }} >
             <Top setCurpage={() => {
               setCurPage('/mine')
-              // 'systemManagement'
             }} />
           </Header>
           <Content style={{ margin: '0 16px' }}>
