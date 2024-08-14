@@ -15,16 +15,14 @@ export const captchaApi = () => {
 export const questionList = () => {
   return request.get('/question/list')
 }
-<<<<<<< HEAD
 //考试列表
 export const examListApi = ()=>{
   return request.get('/examination/list?creator=root')
 }
-// 删除考试 http://192.168.28.11:3001/examination/remove
+// 删除考试 
 export const removeExamListApi = ()=>{
   return request.get('/examination/remove')
 }
-=======
 
 export const classListApi = () => {
   return request.get('/studentGroup/list')
@@ -38,4 +36,3 @@ export const userInfoApi = () => {
   return request.get('/user/info')
 }
 
->>>>>>> 088b2143cd72951032fcf4f11f5986e1f6c74c53

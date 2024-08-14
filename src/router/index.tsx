@@ -4,14 +4,14 @@ import Auth from "../auth/Auth.tsx"
 
 import Home from "../pages/home/Home.tsx"
 import Index from "../layout/Index.tsx"
-import ExamList from "../pages/exam/examList/ExamList.tsx"
+// import ExamList from "../pages/exam/examList/ExamList.tsx"
 
 
 const Login = lazy(() => import('../pages/login/Login.tsx'))
 const Mine = lazy(() => import('../pages/mine/Mine.tsx'))
 const Question = lazy(() =>import('../pages/question/Question.tsx'))
 const AddQuestions = lazy(() => import('../pages/addQuestions/AddQuestions.tsx'))
-const ExamList = lazy( () => import('../pages/examList/ExamList.tsx'))
+const ExamList = lazy( () => import('../pages/exam/examList/ExamList.tsx'))
 const CreateExam = lazy( () => import('../pages/createExam/CreateExam.tsx'))
 const Test = lazy(() =>import('../pages/test/Test.tsx'))
 const AddTest = lazy(() => import('../pages/addTest/addTest.tsx'))

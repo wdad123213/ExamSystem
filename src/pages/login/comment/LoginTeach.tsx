@@ -20,17 +20,14 @@ const LoginTeach:React.FC = () => {
           if(res.data.code===200){
             console.log(res)
             localStorage.setItem('token',res.data.data.token)
+            // console.log(searchParams.get('redirectUrl'))
             const redirectUrl = searchParams.get('redirectUrl') || '/'
             navigate(redirectUrl)
+         }else{
+           message.error(res.data.msg)
+            getCode()
          }
-          if(res.data.code===1005){
-            message.error(res.data.msg)
-            getCode()
-          }
-          if(res.data.code===1002){
-            message.error(res.data.msg)
-            getCode()
-          }
+          
         }catch(e){
           console.log(e)
           // message.error('错误')

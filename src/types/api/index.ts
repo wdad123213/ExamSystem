@@ -20,8 +20,7 @@ export type LoginResponse = BaseResponse & {
   data: Token
 }
 
-<<<<<<< HEAD
-// 
+
 export interface DataType {
   key?: string;
   classify?: string
@@ -36,8 +35,7 @@ export interface DataType {
   startTime?:  String
   _id?: string
   status?: number
-
-=======
+}
 // 用户信息
 export type userInfo = {
   _id: string,
@@ -46,5 +44,4 @@ export type userInfo = {
   status: number
   __v: number
   avator?: string
->>>>>>> 088b2143cd72951032fcf4f11f5986e1f6c74c53
 }
