@@ -17,6 +17,14 @@ export const captchaApi = () => {
 export const questionList = () => {
   return request.get('/question/list')
 }
+//考试列表
+export const examListApi = ()=>{
+  return request.get('/examination/list?creator=root')
+}
+// 删除考试 
+export const removeExamListApi = ()=>{
+  return request.get('/examination/remove')
+}
 
 export const classListApi = (params: classParams) => {
   return request.get('/studentGroup/list',{...params})
