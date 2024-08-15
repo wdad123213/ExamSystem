@@ -1,15 +1,14 @@
-import React, { useRef, useState, useEffect, Key } from 'react';
-import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns } from '@ant-design/pro-components';
-import { ProTable, TableDropdown } from '@ant-design/pro-components';
-import { Button, Dropdown, Space, Tag } from 'antd';
-import style from "../classList/ClassList.module.scss"
 import classNames from 'classnames'
-import { studentListApi } from '../../../server';
-import { studentSaveApi } from '../../../server';
-import { studentDelApi } from '../../../server';
-import { classParams, studentParams, studentObj } from '../../../types/api';
-import { Col, DatePicker, Drawer, Form, Input, Row, Select } from 'antd';
+import style from "../classList/ClassList.module.scss"
+import React, { useRef, useState, useEffect } from 'react';
+import { PlusOutlined } from '@ant-design/icons';
+import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import { ProTable } from '@ant-design/pro-components';
+import { Button, Space } from 'antd';
+import { studentListApi, studentSaveApi, studentDelApi , studentCreateApi} from '../../../server';
+import { studentParams, studentObj, classParams, studentCreat } from '../../../types/api';
+import { Col, Drawer, Form, Input, Row, Select } from 'antd';
+
 
 const { Option } = Select;
 
@@ -38,116 +37,73 @@ type GithubIssueItem = {
     _id: string,
 };
 
-const columns: ProColumns<GithubIssueItem>[] = [
-    {
-        dataIndex: 'index',
-        valueType: 'indexBorder',
-        width: 48,
-    },
-    {
-        title: '姓名',
-        dataIndex: 'username',
-        copyable: true,
-        ellipsis: true,
-        tooltip: '标题过长会自动收缩',
-        formItemProps: {
-            rules: [
-                {
-                    required: true,
-                    message: '此项为必填项',
-                },
-            ],
-        },
-    },
-    {
-        disable: true,
-        title: '性别',
-        dataIndex: 'sex',
-        filters: true,
-        onFilter: true,
-        ellipsis: true,
-        valueType: 'select',
-        valueEnum: {
-            man: {
-                text: '男',
-
-            },
-            weman: {
-                text: '女',
-
-            },
-        },
-    },
-    {
-        title: '年龄',
-        dataIndex: 'age',
-        copyable: true,
-        ellipsis: true,
-        formItemProps: {
-            rules: [
-                {
-                    required: true,
-                    message: '此项为必填项',
-                },
-            ],
-        },
-    },
-    {
-        disable: true,
-        title: '班级',
-        dataIndex: 'className',
-        filters: true,
-        onFilter: true,
-        ellipsis: true,
-        valueType: 'select',
-        valueEnum: {
-            bj: {
-                text: 'nodejs',
-            }
-        },
-    },
-    {
-        disable: true,
-        title: '创建时间',
-        dataIndex: 'createTime',
-        search: false,
-    },
-
-
-    {
-        title: '操作',
-        valueType: 'option',
-        key: 'option',
-        render: (text, record, _, action) => [
-            <a
-                key="editable"
-                onClick={() => {
-                    action?.startEditable?.(record._id);
-                }}
-            >
-                编辑
-            </a>
-        ],
-    },
-];
-
-
 const StudentMain: React.FC = () => {
+    const [classNameList,setclassNameList] = useState<any>([])
+    const [creatMapList,setCreatMapList] = useState<any>([])
+    const [open, setOpen] = useState(false);
     const actionRef = useRef<ActionType>();
+    const [form] = Form.useForm()
+
+    const userList = async () => {
+        // 学生列表数据筛选班级名称数据
+        const res = await studentListApi()
+        const list = res.data.data.list
+        const map:any = {}
+        list.forEach((it: { className: string; }) => {
+            map[it.className] = it.className
+        })
+        setclassNameList(map)
+
+        const creatMap:any = {}
+        list.forEach((it: { _id:string ,className: string; }) => {
+            creatMap[it.className] = {
+                className: it.className,
+                _id: it._id
+            }
+            // creatMap[it._id] = it._id
+        })
+        setCreatMapList(creatMap)
+    }
+
+    const studentCreate = async ( time:number ) => {
+
+        const value = await form.validateFields()
+        console.log(value)
+        const obj:studentCreat = {
+            // ...value,
+            age: value.age,
+            className: value.classname,
+            email: value.email,
+            sex: value.sex,
+            username: value.name,
+            idCard: value.card,
+            avator: "",
+            status: 1,
+            password: 123,
+            page: '1',
+            pagesize: '5',
+
+        }
+        const res = await studentCreateApi(time , obj)
+        console.log(res)
+        setOpen(false);
+    }
+    useEffect(() => {
+        userList()
+    },[])
 
     const request:any = async (params: studentParams, sort: any, filter: any) => {
         try {
             const obj:studentObj = {
                 page:params.current,
                 pagesize:params.pageSize,
-                className:params.name,
-                age:params.teacher,
+                className:params.className,
+                age:params.age,
                 sex:params.sex,
                 username:params.username,
             }
             const res = await studentListApi(obj)
-            console.log(obj)
-
+            // console.log(obj)
             const list = res.data.data?.list || []
             list.forEach((v: { createTime: string | number | Date; }) => {
                 v.createTime = new Date(v.createTime).toLocaleString() || ''
@@ -174,6 +130,93 @@ const StudentMain: React.FC = () => {
 
     }
 
+    const columns: ProColumns<GithubIssueItem>[] = [
+        {
+            dataIndex: 'index',
+            valueType: 'indexBorder',
+            width: 48,
+        },
+        {
+            title: '姓名',
+            dataIndex: 'username',
+            copyable: true,
+            ellipsis: true,
+            tooltip: '标题过长会自动收缩',
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        message: '此项为必填项',
+                    },
+                ],
+            },
+        },
+        {
+            disable: true,
+            title: '性别',
+            dataIndex: 'sex',
+            filters: true,
+            onFilter: true,
+            ellipsis: true,
+            valueType: 'select',
+            valueEnum: {
+                "男": {
+                    text: '男',
+    
+                },
+                "女": {
+                    text: '女',
+    
+                },
+            },
+        },
+        {
+            title: '年龄',
+            dataIndex: 'age',
+            copyable: true,
+            ellipsis: true,
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        message: '此项为必填项',
+                    },
+                ],
+            },
+        },
+        {
+            disable: true,
+            title: '班级',
+            dataIndex: 'className',
+            filters: true,
+            onFilter: true,
+            ellipsis: true,
+            valueType: 'select',
+            valueEnum: { ...classNameList },
+        },
+        {
+            disable: true,
+            title: '创建时间',
+            dataIndex: 'createTime',
+            search: false,
+        },
+        {
+            title: '操作',
+            valueType: 'option',
+            key: 'option',
+            render: (text, record, _, action) => [
+                <a
+                    key="editable"
+                    onClick={() => {
+                        action?.startEditable?.(record._id);
+                    }}
+                >
+                    编辑
+                </a>
+            ],
+        },
+    ];
+
     const toSave = async (v: any, i: any) => {
         const res = await studentSaveApi(v, {
             ...i,
@@ -190,19 +233,16 @@ const StudentMain: React.FC = () => {
     const toDel = async (v: any, i: any) => {
         const res = await studentDelApi(v)
         // console.log(res)
-
     }
 
     // 新增学生功能
-    const [open, setOpen] = useState(false);
-
+    
     const showDrawer = () => {
         setOpen(true);
     };
 
     const onClose = () => {
         setOpen(false);
-
     };
 
     return (
@@ -258,6 +298,7 @@ const StudentMain: React.FC = () => {
                 toolBarRender={() => [
 
                     <div>
+                        {/* {console.log(Object.values(creatMapList))} */}
                         <Button
                             key="button"
                             icon={<PlusOutlined />}
@@ -268,7 +309,6 @@ const StudentMain: React.FC = () => {
                         >
                             添加学生
                         </Button>
-
                         <Drawer
                             title="添加学生"
                             width={720}
@@ -283,7 +323,7 @@ const StudentMain: React.FC = () => {
                                 <div style={{ position: 'absolute', left: "75%", top: '93%' }}>
                                     <Space>
                                         <Button onClick={onClose}>取消</Button>
-                                        <Button onClick={onClose}
+                                        <Button onClick={() => studentCreate(Date.now())}
 
                                             type="primary">
                                             确认
@@ -292,7 +332,9 @@ const StudentMain: React.FC = () => {
                                 </div>
                             }
                         >
-                            <Form layout="vertical" hideRequiredMark>
+                            <Form layout="vertical" hideRequiredMark
+                            form={form}
+                            >
                                 <Row gutter={16}>
                                     <Col span={8}>
                                         <Form.Item
@@ -311,8 +353,8 @@ const StudentMain: React.FC = () => {
                                             rules={[{ required: true, message: 'Please select an owner' }]}
                                         >
                                             <Select placeholder="请选择">
-                                                <Option value="xiao">男</Option>
-                                                <Option value="mao">女</Option>
+                                                <Option value="男">男</Option>
+                                                <Option value="女">女</Option>
                                             </Select>
                                         </Form.Item>
                                     </Col>
@@ -350,29 +392,18 @@ const StudentMain: React.FC = () => {
                                         <Form.Item
                                             name="classname"
                                             label="班级名称"
-
                                             rules={[{ required: true, message: 'Please choose the approver' }]}
                                         >
                                             <Select placeholder="请选择">
-                                                <Option value="jack">Jack Ma</Option>
-                                                <Option value="tom">Tom Liu</Option>
+                                                {Object.values(creatMapList).map( (item:any) => {
+                                                        return  <Option value={item._id}>{item.className}</Option>
+                                                })  }
                                             </Select>
                                         </Form.Item>
                                     </Col>
-
                                 </Row>
-
                             </Form>
-
-
-
-
-
-
                         </Drawer>
-
-
-
                     </div>
                 ]}
             />
