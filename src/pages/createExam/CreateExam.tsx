@@ -1,194 +1,143 @@
-import React from 'react'
-import { Steps , DatePicker, Space,Input, AutoComplete,
-  Button,
-  Cascader,
-  Checkbox,
-  Col,
-  Form,
-   TimePicker,
+import React, { useEffect, useState } from 'react'
+import { Steps, } from 'antd';
+import style from './CreateExam.module.scss'
+import { examinationlApi,createTestApi } from '../../server';
+// import { createExam } from '../../types/api'
+import CreateFrom from './component/createFrom/createFrom';
+import ConfigureExam from './component/ConfigureExam/ConfigureExam';
+import ConfigureMation from './component/configureMation/configureMation';
+import { createTestType, examcheng } from '../../types/api';
+
+
+const CreateExam: React.FC= () => {
+  const [currentNum, setCurrentNum] = useState(0)
+  // 考试列表
+  const [conExamList, setconExamList] = useState<examcheng[]>([])
+  //考试试卷信息
+  const [selectedRows,setSelectedRows] = useState<examcheng[]>([])
+  // 考试配置信息
+  const [creFrom, setCreFrom] = useState<examcheng[]>([])
+  // 
+  // const [examChang, setexamChang] = useState<createTestType[]>([])
+  const conExam = async (a:string)=>{
+    const res = await examinationlApi(a)
+    setconExamList(res.data.data.list.map((item: { _id: any; }) =>{
+      return {
+          ...item,
+          key:item._id
+      }
+    }))
+  }
+  // type createTestType = {
+  //   name: creFrom.name,
+  //   classify:creFrom.classify,
+  //   examiner:creFrom.examiner,
+  //   group:creFrom.group,
+  //   examId:selectedRows.key,
+  //   startTime:  Date.parse(creFrom.time[0]),
+  //   endTime:  Date.parse(creFrom.time[1]),
+  // }
+  // 考试试卷信息
+  console.log(selectedRows,creFrom)
+// 创建完成，传后端
+  const completeexam = ()=>{
+    
+    const arr:createTestType = {
+      name: creFrom.name ,
+      classify:creFrom.classify[0],
+      examiner:creFrom.examiner[0],
+      group:creFrom.group[0],
+      examId:selectedRows.key,
+      startTime:  Date.parse(creFrom.time[0]),
+      endTime:  Date.parse(creFrom.time[1]),
+    }
+    const newtime =  Date.now()
+    createTest(newtime,arr)
+
+  }
+
+   const createTest =(a: number,b: createTestType)=>{
+      createTestApi(a,b)
+    }
+ 
   
-  InputNumber,
-  Row,
-  Select,} from 'antd';
-import {createExam} from '../../types/api'
-import type { CascaderProps } from 'antd';
-const { RangePicker } = DatePicker;
+  // setexamChang()
+ 
+  
 
-interface DataNodeType {
-  value: string;
-  label: string;
-}
+  const changecurrentNum =()=>{
 
-const { Option } = Select;
-const formItemLayout = {
-    labelCol: {
-      xs: { span: 24 },
-      sm: { span: 8 },
-    },
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 16 },
-    },
-  };
+    if(currentNum===0){
+      return <CreateFrom  
+                nextPage={nextPage}
+                getexamPage={getexamPage}
+                setCreFrom={setCreFrom}
+              />
+    }else if(currentNum===1){
+      return <ConfigureExam 
+                nextPage = {nextPage} 
+                upPage = {upPage} 
+                conExamList={conExamList}
+                setconExamList={setconExamList}
+                setSelectedRows={setSelectedRows}
 
-  const residences: CascaderProps<DataNodeType>['options'] = [
-    {
-      value: '数学',
-      label: '数学',
-      
-    },
-    {
-      value: '英语',
-      label: '英语',
-     
-    },
-    {
-      value: '地理',
-      label: '地理',
-     
-    },
-  ];
-  const examiner:CascaderProps<DataNodeType>['options'] = [
-    {
-      value: '吴江',
-      label: '吴江',
-      
-    },
-    {
-      value: '叶一耶',
-      label: '叶一耶',
-     
-    },
-    {
-      value: 'root',
-      label: 'root',
-     
-    },
+              />
+    }else if(currentNum===2){
+      return <ConfigureMation 
+                upPage = {upPage} 
+                createTest={createTest}
+                creFrom={creFrom}
+                selectedRows={selectedRows}
+                completeexam={completeexam}
+              />
+    }
+  }
+  const nextPage =()=>{
+    setCurrentNum(currentNum+1)
+  }
+  const upPage =()=>{
+    setCurrentNum(currentNum-1)
+  }
+  const getexamPage = (e:any)=>{
+    console.log(e.classify)
+    setCreFrom(e)
 
-  ]
-  const group:CascaderProps<DataNodeType>['options'] = [
-    {
-      value: 'rooter',
-      label: 'rooter',
-      
-    },
-    {
-      value: '一班',
-      label: '一班',
-     
-    },
-    {
-      value: '六班',
-      label: '六班',
-     
-    },
+    conExam('classify'+'='+e.classify)
 
-  ]
-
-  const rangeConfig = {
-    rules: [{ type: 'array' as const, required: true, message: 'Please select time!' }],
-  };
-// const { RangePicker } = DatePicker;
-// const description = 'This is a description.';
-const CreateExam:React.FC = () => {
-  const [form] = Form.useForm();
-  const onFinish = (values: any) => {
-    console.log('Received values of form: ', values);
-  };
+  }
 
   
+ 
+  useEffect(()=>{
+
+  },[])
+
+
   return (
-    <div>
-      <Steps
-        current={0}
-        initial={0}
-        items={[
-          {
-            title: '考试基本信息',
+    
+    <div className={style.createExam}>
       
-          },
-          {
-            title: '配置试卷',
-            
-          },
-          {
-            title: '发布考试',
-          
-          },
-        ]}
-      />
-      <div>
-      <Form
-        {...formItemLayout}
-        form={form}
-        name="register"
-        onFinish={onFinish}
-        // initialValues={{ residence: ['zhejiang', 'hangzhou', 'xihu'], prefix: '86' }}
-        style={{ maxWidth: 600 }}
-        scrollToFirstError
-      >
-      <Form.Item
-          name="name"
-          label="考试名称"
-          rules={[
-
+      <div className={style.steps}>
+        
+        <Steps
+          current={currentNum}
+          initial={0}
+          items={[
             {
-              required: true,
-              message: '此项为必填项!',
+              title: '考试基本信息',
+            },
+            {
+              title: '配置试卷',
+            },
+            {
+              title: '发布考试',
             },
           ]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item 
-          name="range-time-picker" 
-          label="考试时间" 
-          rules={[{ type: 'array' as const, required: true, message: '此项为必填项!' }]}
-        >
-          <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
-        </Form.Item>
-        <Form.Item
-          name="classify"
-          label="考试科目"
-          rules={[
-            { 
-              // type: 'array', 
-              required: true, 
-              message: '此项为必填项!' },
-          ]}
-        >
-          <Cascader options={residences} />
-        </Form.Item>
-        <Form.Item
-          name="examiner"
-          label="监考人"
-          rules={[
-            { 
-              // type: 'array', 
-              required: true, 
-              message: '此项为必填项!' },
-          ]}
-        >
-          <Cascader options={examiner} />
-        </Form.Item>
-        <Form.Item
-          name="group"
-          label="考试班级"
-          rules={[
-            { 
-              // type: 'array', 
-              required: true, 
-              message: '此项为必填项!' },
-          ]}
-        >
-          <Cascader options={group} />
-        </Form.Item>
-      </Form>
-        
-
+        />
       </div>
-      
+      <div className={style.change}>
+        {changecurrentNum()}
+      </div>
     </div>
   )
 }

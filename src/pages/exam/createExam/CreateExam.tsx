@@ -6,7 +6,7 @@ import {examDetailApi} from '../../../server/index'
 const CreateExam:React.FC = () => {
   const [changePage,setChangePage] = useState(true)
 
-  const examDetail = async (id) => {
+  const examDetail = async (id:number) => {
     const res = await examDetailApi(id)
     console.log(res)
     // const newArr = [res.data.data.list]
@@ -14,8 +14,8 @@ const CreateExam:React.FC = () => {
   }
 
 
-  const changePageExam=(id)=>{
-    console.log(id)
+  const changePageExam:any =(id:number)=>{
+    // console.log(id)
     setChangePage(!changePage)
     examDetail(id)
 
@@ -26,9 +26,9 @@ const CreateExam:React.FC = () => {
   return (
     <div>
       {changePage?
-      <ExamList changePageExam={changePageExam}/>
+      <ExamList changePageExam={()=>changePageExam()}/>
       :
-      <ExamExcel changePageExam={changePageExam}/>
+      <ExamExcel changePageExam={()=>changePageExam()}/>
     }
       
       

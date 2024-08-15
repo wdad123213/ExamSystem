@@ -47,11 +47,48 @@ export type userInfo = {
 }
 // 创建考试
 export type createExam={
-  name:string,
-  classify: string,
-  examId: string,
-  group:string,
-  examiner:string,
-  startTime: number,
-  endTime:number
+  name?:string,
+  classify?: string,
+  examId?: string,
+  creator?: string,
+  group?:string,
+  examiner?:string,
+  startTime?: number|string,
+  endTime?:number|string,
+  createTime?:string|number,
+  status?:string
 }
+export type examcheng ={
+  classify?: string
+  createTime?: number
+  creator?: string
+  endTime?: number
+  examId?: string
+  examiner?: string[]
+  group?: null[]
+  name?: string
+  questionsList?:{
+          answer:  string
+          classify: string
+          options:  string[]
+          question:  string
+          type:  string
+          __v: number
+          _id:  string}[],
+  startTime?: number
+  status?: number
+  __v?: number
+  _id?: string
+  key?:string
+}
+// 创建考试
+export interface createTestType {
+  classify:string;
+  endTime:string|number;
+  examId:string;
+  examiner:string;
+  group:string;
+  name:string;
+  startTime:string|number;
+}
+

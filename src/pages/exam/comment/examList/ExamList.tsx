@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Table,  Input, Typography,Button, Drawer , Flex, Radio, Select, Space } from 'antd';
+import { Table,  Input, Typography,Button, Drawer , Flex} from 'antd';
 import type { TableProps } from 'antd';
 import {UpOutlined ,DownOutlined } from '@ant-design/icons'
 import style from './ExamLisr.module.scss'
@@ -7,29 +7,22 @@ import type { ConfigProviderProps } from 'antd';
 import { examListApi ,removeExamListApi,examinationlApi} from '../../../../server/index'
 import { ExamListDataType} from '../../../../types/api'
 import ExamDrawer from '../examDrawer/examDrawer';
-import userStore from '../../../../store/models/userStore';
 type SizeType = ConfigProviderProps['componentSize'];
-// const { Search } = Input;
 export type FormVal = Partial<ExamListDataType>
-const ExamList: React.FC = (props) => {
+
+
+
+const ExamList: React.FC<any> = (props) => {
   const [obj1,setobj1] = useState('')
   const [obj2,setobj2] = useState('')
   const [open, setOpen] = useState(false);
-  const [searchRes,getSearchRes] = useState('')
-
   const [size, setSize] = useState<SizeType>('large'); // default is 'middle'
   const [isShow, setIsShow] = useState(false)
   const [examList, setExamList] = useState([])
-  const [stateTime, getStateTime] = useState('')
   const [examQuest,setExamQuest] = useState([])
-  const [reject,setReject] = useState([])
-
-  // const toexcel =()=>{
-  //   console.log(pages.)
-  // }
 
 
- const [resList,setResList]= useState(
+ const [resList,setResList]= useState<any>(
   { 
     name: '',
     classify: '',
@@ -44,6 +37,7 @@ const ExamList: React.FC = (props) => {
   }
 )
 
+
   examList.forEach((item:any)  => {
     item.key=item._id
     item.startTime = new Date(item.startTime).toLocaleString() || ''
@@ -51,7 +45,7 @@ const ExamList: React.FC = (props) => {
     item. endTime = new Date(item. endTime).toLocaleString() || ''
   })
 
-  const showDrawer = (e) => {
+  const showDrawer = (e:any) => {
     console.log(e)
     setExamQuest(e)
     setOpen(true);
@@ -60,12 +54,8 @@ const ExamList: React.FC = (props) => {
   const onClose = () => {
     setOpen(false);
   };
-
-
   const awlist = async () => {
     const res = await examListApi()
-    // console.log(res.data.data.list)
-    // const newArr = [res.data.data.list]
     setExamList(res.data.data.list)
   }
 
@@ -76,25 +66,18 @@ const ExamList: React.FC = (props) => {
   // 搜索内容
   const examination = async (v:any)=>{
     const res = await examinationlApi(v)
-    // console.log(res.data.data.list)
     setExamList(res.data.data.list)
   }
 
-
 //  搜索
   const handleClickGetContent = () => {
-    // console.log('输入的内容:', resList);
     const arr = Object.keys(resList)
-    // const obj =""
-    
-    
-    const res = {}
-    arr.forEach(v => {
-      if(resList[v]) res[v] = resList[v]
+    const res:any = {}
+    arr.forEach((v:any) => {
+      if(resList[v]) {
+        res[v] = resList[v]
+      }
     })
-    // console.log( Object.keys(res));
-    // console.log( Object.values(res));
-    // console.log(res)
     if(Object.keys(res)){
       if(Object.keys(res).length>1){
         // let obj = {}
@@ -116,27 +99,44 @@ const ExamList: React.FC = (props) => {
         examination(obj)
       }
     }else{
-      setResList("")
+      const obj = {
+        name: '',
+        classify: '',
+        creator: '',
+        createTime: '',
+        status:'',
+        examiner:'',
+        group:'',
+        startTime:  '',
+        endTime: '',    
+      }
+      setResList(obj)
     }
-    
-     
-    // console.log(obj)
-    
-   
-
   };
 
   const reset = ()=>{
-    setResList("")
+    const obj = {
+      name: '',
+      classify: '',
+      creator: '',
+      createTime: '',
+      status:'',
+      examiner:'',
+      group:'',
+      startTime:  '',
+      endTime: '',
+      
+    }
+    setResList(obj)
     
   
 
   }
  
   // 删除
-  const detal = (e)=>{
+  const detal = (e:any)=>{
     console.log(e)
-    // removeExamListApi(e)
+    removeExamListApi(e)
 
   }
 
@@ -151,52 +151,41 @@ const ExamList: React.FC = (props) => {
     {
       title: '考试名称',
       dataIndex: 'name',
-      // ellipsis: true,
     },
     {
 
       title: '科目分类',
       dataIndex: 'classify',
-
-      // ellipsis: true,  //省略
-
     },
     {
-      // disable: true,
       title: '创建者',
       dataIndex: 'creator',
-      // ellipsis: true,
 
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
-      // ellipsis: true,
     },
     {
       title: '状态',
       dataIndex: 'status',
-      // ellipsis: true,
     },
     {
       title: '监考人',
       dataIndex: 'examiner',
-      // ellipsis: true,
     },
     {
       title: '考试班级',
       dataIndex: 'group',
-      // ellipsis: true,
     },
     {
       title: '开始时间',
       dataIndex: 'startTime',
-      // ellipsis: true,
+
     },
     {
       title: '结束时间',
       dataIndex: 'endTime',
-      // ellipsis: true,
     },
 
     {
@@ -223,19 +212,13 @@ const ExamList: React.FC = (props) => {
     },
     {
       title: '操作',
-      // dataIndex: 'tags',
       render: (_, action) =>
         <button onClick={()=>props.changePageExam(action._id)}>
           成绩分析
         </button>
-
     }
   ];
   
-
-
-
-
 
   return (
     <div>

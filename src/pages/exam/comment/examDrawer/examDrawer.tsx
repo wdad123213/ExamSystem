@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-const examDrawer:React.FC = (pages) => {
+const examDrawer:React.FC<any>= (pages) => {
   const [examQuestList,getExamQuestList] = useState('')
     // console.log(pages.examQuest)
     // getExamQuestList(pages.examQuest)

@@ -1,6 +1,6 @@
 import React from 'react'
 
-const examExcel:React.FC = (props) => {
+const examExcel:React.FC<any> = (props) => {
   return (
     <div>
         <div>

@@ -1,7 +1,8 @@
 import request from './request.tsx'
 import {
   LoginResponse,
-  LoginParams
+  LoginParams,
+  createTestType
 } from "../types/api"
 
 export const loginApi = (params: LoginParams) => {
@@ -20,11 +21,9 @@ export const examListApi = ()=>{
   return request.get('/examination/list?creator=root')
 }
 // 删除考试 
-// export const removeExamListApi = (id:string)=>{
-//   return request.get('/examination/remove',{
-//     id
-//   })
-// }
+export const removeExamListApi = (id:number)=>{
+  return request.get(`/examination/remove?${id}`)
+}
 
 export const classListApi = () => {
   return request.get('/studentGroup/list')
@@ -42,8 +41,12 @@ export const userInfoApi = () => {
 export const examDetailApi = (id:number) => {
   return request.get(`/exam/detail?id=${id}`)
 }
-// /examination/list?name=123
-export const examinationlApi = (v) => {
+// 搜索试卷
+export const examinationlApi = (v:any) => {
   return request.get(`examination/list?${v}`)
+}
+// 创建考试试卷 https://zyxcl.xyz/exam_api/examination/create?1723711365616
+export const createTestApi = (time:number, createDate:createTestType) => {
+  return request.post(`/examination/create?${time}`, createDate)
 }
 
