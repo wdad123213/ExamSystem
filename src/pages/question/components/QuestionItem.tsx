@@ -291,7 +291,7 @@ const QuestionItem: React.FC<{
                                 size={size}
                                 onClose={onClose}
                                 open={open}
-                                rootStyle={{ opacity: 0.25 }}
+                                rootStyle={{ opacity: 0.8 }}
                                 extra={
                                     <Space>
                                         <Button onClick={() => detail && feExportExcel(detail)}>导出试题</Button>
