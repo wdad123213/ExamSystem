@@ -178,6 +178,8 @@ const Index: React.FC<Props> = (prop) => {
                   minHeight: 360,
                   background: colorBgContainer,
                   borderRadius: borderRadiusLG,
+                  height: '100vh',
+                  overflowY:'scroll'
                 }}>
               {prop.children}
             </div>

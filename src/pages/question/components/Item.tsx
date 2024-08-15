@@ -1,23 +1,102 @@
 import { Button, Space, Input, Select } from 'antd';
 import style from './Item.module.scss'
 import QuestionItem from './QuestionItem';
-interface MyComponentProps { }
-const Item: React.FC = (props: MyComponentProps) => {
-  const search = () => {
+import { useNavigate } from 'react-router-dom';
+import { searchList, questionList } from '../../../server';
+import { useEffect, useState } from 'react';
+const { Search } = Input;
+import type { GetProps } from 'antd';
+type SearchProps = GetProps<typeof Input.Search>;
+interface TypeItem {
+  name: string,
+  value: string,
+  _id?: string,
+  label?:string
+}
+// interface ListItem {
+//   label: string,
+//   value: string,
+// }
+const Item: React.FC = () => {
+  const [subjectList, setSubjectList] = useState<TypeItem[]>([])
+  const navigate = useNavigate();
+  const [typeList, setTypeList] = useState<TypeItem[]>()
+  const [newClassify1, setNewClassify1] = useState<string[]>([])
+  const [type, setType] = useState<string>('')
+  const [subjectType, setSubjectType] = useState<string>('')
+  const [keyword, setKeyword] = useState<string>('')
+  // const [list, setList] = useState<TypeItem[]>()
+  const go = () => {
+    navigate('/addQuestions')
   }
+  const getList = async (value: string = '') => {
+    try {
+      const res = await questionList(value);
+      // console.log(res.data.data.list);
+      const list = res.data.data.list;
+      const classify: string[] = list.map((v: { classify: string; }) => {
+        return v.classify
+      })
+      setNewClassify1([...new Set(classify)])
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+  }
+  const change = async (value: string) => {
+    setType(value)
+  }
+  const changeSubject = async (value: string, option: { value: string, label: string }) => {
+    setSubjectType(option.label)
+
+  }
+  const getType = async () => {
+    const res = await searchList()
+    const typeListData = res.data.data.list;
+    const li = typeListData?.map((v: { value: any; name: any; }) => ({
+      value: v.value,
+      label: v.name
+    }));
+    setTypeList(li)
+  }
+  const getSubject = () => {
+    if (newClassify1) {
+      const subject = newClassify1.map((v, index: number) => ({
+        value: index + 1,
+        label: v
+      }));
+      setSubjectList(subject)
+    }
+  }
+  const onSearch: SearchProps['onSearch'] = (value) => {
+    setKeyword(value)
+  };
+  useEffect(() => {
+    getList()
+    getType()
+  }, [])
+  useEffect(() => {
+    if (newClassify1) {
+      getSubject();
+    }
+  }, [newClassify1])
   return (
     <div className={style.box}>
       <Space>
-        <Button type="primary">添加试题</Button>
+        <Button type="primary" onClick={go}>添加试题</Button>
       </Space>
-      <header>
-        <div>
+      <header style={{ display: 'flex', alignItems:'center',justifyContent:'space-between', padding:'10px'}}>
+        <div style={{ display: 'flex', alignItems: 'center',justifyContent:'space-between' }}>
           试题搜索:
-          <Space.Compact style={{ width: '250px', margin: '10px' }}>
-            <Input />
-            <Button type="primary" onClick={search}>搜索</Button>
-          </Space.Compact></div>
-        <div>
+          <Space.Compact>
+            <Search
+              allowClear
+              enterButton="搜索"
+              size="large"
+              onSearch={onSearch}
+            />
+          </Space.Compact>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center',justifyContent:'space-between' }}>
           试题分类:
           <Select
             style={{ margin: '10px' }}
@@ -25,14 +104,14 @@ const Item: React.FC = (props: MyComponentProps) => {
             placeholder="选择题型"
             filterOption={(input, option) =>
               (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+
             }
-            options={[
-              { value: '1', label: '单选题' },
-              { value: '2', label: '多选题' },
-              { value: '3', label: '填空题' },
-            ]}
+            onSelect={change}
+            options={
+              typeList
+            }
           /></div>
-        <div>
+        <div style={{ display: 'flex', alignItems: 'center',justifyContent:'space-between' }}>
           题目类型:
           <Select
             style={{ margin: '10px' }}
@@ -41,15 +120,13 @@ const Item: React.FC = (props: MyComponentProps) => {
             filterOption={(input, option) =>
               (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
             }
-            options={[
-              { value: '1', label: '地理' },
-              { value: '2', label: '数学' },
-              { value: '3', label: '历史' },
-            ]}
-          /></div>
+            onSelect={changeSubject}
+            options={subjectList}
+          />
+        </div>
       </header>
       <main>
-        <QuestionItem>
+        <QuestionItem type={type} subjectType={subjectType} keyword={keyword}>
         </QuestionItem>
       </main>
     </div>
