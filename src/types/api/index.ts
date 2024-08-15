@@ -19,6 +19,15 @@ export type LoginResponse = BaseResponse & {
   data: Token
 }
 
+//试题库
+export type SearchParams = Record<'page' | 'pageSize' | 'keyWord' | 'type' | 'name', string>
+export type RemoveParams = {
+  id:string
+}
+export type UpdateParams = {
+  id: string,
+  question:string
+}
 
 export interface DataType {
   key?: string;

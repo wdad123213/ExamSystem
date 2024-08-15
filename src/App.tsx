@@ -7,7 +7,7 @@ function App() {
   const userInfo = useAppSelector(state => state.user.userInfo)
   return (
       <Watermark content={userInfo.username}>
-        <div>
+        <div >
           {useRoutes(routerConfig)}
         </div>
       </Watermark>
