@@ -31,7 +31,7 @@ export const removeExamListApi = ()=>{
 }
 
 export const classListApi = (params: classParams) => {
-  return request.get('/studentGroup/list',{...params})
+  return request.get('/studentGroup/list',{params})
 }
 
 export const classDelApi = (id: any) => {
@@ -42,8 +42,8 @@ export const classSaveApi = (id: any,it: any) => {
   return request.post('/studentGroup/update',{id,...it})
 }
 
-export const studentListApi = (params: studentParams) => {
-  return request.get('/student/list',{...params})
+export const studentListApi = (params: classParams) => {
+  return request.get(`/student/list`,{params})
 }
 
 export const studentDelApi = (id: any) => {

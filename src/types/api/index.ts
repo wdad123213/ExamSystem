@@ -9,7 +9,6 @@ export interface BaseValuse<T> {
   data: T
 }
 
-
 type Token = {
   token: string
 }
@@ -38,23 +37,36 @@ export interface DataType {
 }
 
 export type classParams = {
-  page: String,
-  pagesize: String,
-  name: String,
-  teacher: String,
-  classify: String,
+  page: string | number,
+  pagesize: string | number,
+  name?: String,
+  teacher?: String,
+  classify?: String,
   
 }
-
 export type studentParams = {
-  username: String,
-  sex: String,
-  age: String,
-  className: String,
-  pageSize: String,
-  current: String,
-  // page: String,
-  
+  [x: string]: string | number,
+  page: string | number;
+  pagesize: string | number;
+  className: string;
+  age: string | number;
+  sex: string;
+  username: string;
+  name: string;
+  teacher: string;
+  classify: string;
+}
+
+export type studentObj = {
+  page: string | number,
+  pagesize: string | number,
+  className: string,
+  age: string | number,
+  sex: string,
+  username: string,
+  name?: string;
+  teacher?: string;
+  classify?: string;
 }
 
 export interface UserListType {
