@@ -6,7 +6,7 @@ export interface BaseResponse {
 export interface BaseValuse<T> {
   code: number;
   msg: string;
-  values: T
+  data: T
 }
 
 
@@ -16,9 +16,7 @@ type Token = {
 
 // 登录
 export type LoginParams = Record<'username' | 'password'|'code', string>
-export type LoginResponse = BaseResponse & {
-  data: Token
-}
+export type LoginResponse = BaseValuse<Token>
 
 
 export interface DataType {
@@ -36,6 +34,36 @@ export interface DataType {
   _id?: string
   status?: number
 }
+
+// 用户返回值
+type User ={
+  list:UserListType[]
+  total:number
+  totalPage:number
+}
+
+export interface UserListType {
+  creator: string
+  lastOnlineTime: number
+  password: string
+  role: string[]
+  status: number
+  username: string
+  __v: number
+  _id: string
+  rowKey?:string
+  avator?:string
+}
+
+export type UserParams = {
+  page?:number
+  pagesize?: number
+  status?:number
+  username?:string
+}
+export type UserResponse = BaseValuse<User>
+
+
 // 用户信息
 export type userInfo = {
   _id: string,
@@ -44,4 +72,13 @@ export type userInfo = {
   status: number
   __v: number
   avator?: string
+}
+
+// 用户更新
+export type userStateParams = {
+  id?: string
+  status: number
+  password?: string
+  username?: string
+  confirm?:string
 }

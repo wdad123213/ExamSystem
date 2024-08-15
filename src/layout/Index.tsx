@@ -6,7 +6,7 @@ import {
   UsergroupAddOutlined,
   ContainerOutlined
 } from '@ant-design/icons'
-import { Breadcrumb, Layout, Menu, theme } from 'antd'
+import { Layout, Menu, theme } from 'antd'
 import Top from '../components/header/Top.tsx'
 import {useLocation, useNavigate} from "react-router-dom";
 
@@ -146,47 +146,45 @@ const Index: React.FC<Props> = (prop) => {
     if(openKeys.length > 1) openKeys.shift()
   }
   return (
-    <div>
-      <Layout style={{ minHeight: '100vh' }}>
-        <Sider theme="light" collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-          <div className="demo-logo-vertical" />
-          <Menu
-            theme="light"
-            defaultSelectedKeys={[curPage]}
-            // defaultOpenKeys={curLabel}
-            selectedKeys={[curPage]}
-            mode="vertical"
-            items={items}
-            onClick={changeItem}
-            onOpenChange={changeOpen}
-          />
-        </Sider>
-        <Layout>
-          <Header style={{ padding: 0, background: colorBgContainer }} >
-            <Top setCurpage={() => {
-              setCurPage('/mine')
-            }} />
-          </Header>
-          <Content style={{ margin: '0 16px' }}>
-            <Breadcrumb style={{ margin: '16px 0' }}>
-              <Breadcrumb.Item>{curManage}</Breadcrumb.Item>
-              <Breadcrumb.Item>{curContent}</Breadcrumb.Item>
-            </Breadcrumb>
+    <>
+      <Layout style={{height: '100vh'}}>
+        <Header style={{ padding: 0, background: colorBgContainer }} >
+          <Top setCurpage={() => {
+            setCurPage('/mine')
+          }} />
+        </Header>
+        <Layout >
+          <Sider theme="light" collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+            <div className="demo-logo-vertical" />
+            <Menu
+              theme="light"
+              defaultSelectedKeys={[curPage]}
+              selectedKeys={[curPage]}
+              mode="vertical"
+              items={items}
+              onClick={changeItem}
+              onOpenChange={changeOpen}
+            />
+          </Sider>
+          <Content style={{ margin: '0 16px',overflowY:"auto" }}>
+            <div style={{margin: '16px 0'}}>
+              <span style={{color:'#AAA'}}>{curManage}</span> - <span>{curContent}</span>
+            </div>
             <div style={{
                   padding: 24,
-                  minHeight: 360,
+                  minHeight: 750,
                   background: colorBgContainer,
                   borderRadius: borderRadiusLG,
                 }}>
               {prop.children}
             </div>
+            <Footer style={{ textAlign: 'center' }}>
+              Ant Design ©{new Date().getFullYear()} Created by Ant UED
+            </Footer>
           </Content>
-          <Footer style={{ textAlign: 'center' }}>
-            Ant Design ©{new Date().getFullYear()} Created by Ant UED
-          </Footer>
         </Layout>
       </Layout>
-    </div>
+    </>
   )
 }
 

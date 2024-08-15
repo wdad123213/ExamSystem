@@ -1,7 +1,7 @@
 import {Suspense} from "react"
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
-import style from './common.moduel.scss'
+import './common.scss'
 import {BrowserRouter as Router} from "react-router-dom"
 import store from "./store"
 import { Provider } from 'react-redux'
