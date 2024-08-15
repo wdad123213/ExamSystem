@@ -42,8 +42,8 @@ export const classSaveApi = (id: any,it: any) => {
   return request.post('/studentGroup/update',{id,...it})
 }
 
-export const studentListApi = (params: classParams) => {
-  return request.get(`/student/list`,{params})
+export const studentListApi = (params: studentParams) => {
+  return request.get('/student/list',{params})
 }
 
 export const studentDelApi = (id: any) => {
@@ -81,3 +81,7 @@ export const userDelApi = (id:string) => {
   return request.post<BaseResponse>('/user/remove',{id})
 }
 
+// 角色列表
+export const userRoleList = () => {
+  return request.get('/role/list')
+}

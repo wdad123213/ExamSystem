@@ -278,7 +278,7 @@ const User:React.FC = () => {
                 <Input.Password  style={{width:200}} />
               </Form.Item>
               <Form.Item<FieldType>
-                  label="性别"
+                  label="是否启用"
                   name="status"
                   rules={[{ required: true, message: '请选择是否启用!' }]}
               >
