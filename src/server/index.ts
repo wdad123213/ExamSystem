@@ -81,3 +81,7 @@ export const userDelApi = (id:string) => {
   return request.post<BaseResponse>('/user/remove',{id})
 }
 
+// 角色列表
+export const userRoleList = () => {
+  return request.get('/role/list')
+}
