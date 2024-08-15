@@ -6,8 +6,8 @@ import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable, TableDropdown } from '@ant-design/pro-components';
 import { Button, Dropdown, Space, Tag } from 'antd';
-import { classDelApi , classSaveApi} from '../../../server';
-import { classParams } from '../../../types/api';
+import { classDelApi , classSaveApi , userListApi} from '../../../server';
+import { classParams , UserParams } from '../../../types/api';
 
 import { Col, DatePicker, Drawer, Form, Input, Row, Select } from 'antd';
 
@@ -42,14 +42,29 @@ type classItem = {
 const ClassMain: React.FC = () => {
     
     const [teachList,setTeachList] = useState<any>([])
+    const [nameList,setNameList] = useState<any>([])
+
     
     const actionRef = useRef<ActionType>();
 
-    // const userList = () => {
-    //     const res = await 
-    // }
+    const userList = async () => {
+        const res = await classListApi()
+        const list = res.data.data.list
+        const map:any = {}
+        list.forEach((it: { teacher: string; }) => {
+            map[it.teacher] = it.teacher
+        })
+        setTeachList(map)
+        console.log(map ,list)
+
+        const obj:any = {}
+        list.forEach((v: { name: string; }) => {
+            obj[v.name] = v.name
+        })
+        setNameList(obj)
+    }
     useEffect(() => {
-        // userList()
+        userList()
     },[])
     
     const request:any = async (params: classParams, sort: any, filter: any) => {
@@ -144,7 +159,7 @@ const ClassMain: React.FC = () => {
             onFilter: true,
             ellipsis: true,
             valueType: 'select',
-            valueEnum: {...teachList},
+            valueEnum: {...nameList},
         },
         {
             disable: true,

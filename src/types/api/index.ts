@@ -69,6 +69,20 @@ export type studentObj = {
   classify?: string;
 }
 
+export type studentCreat = {
+  page: string;
+  pagesize: string;
+  age: string;
+  avator: string;
+  className: string;
+  email: string;
+  idCard: string;
+  password: number;
+  sex: string;
+  status: number;
+  username: string;
+}
+
 export interface UserListType {
   creator: string
   lastOnlineTime: number
