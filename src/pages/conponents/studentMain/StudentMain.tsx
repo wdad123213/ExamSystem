@@ -6,6 +6,9 @@ import { Button, Dropdown, Space, Tag } from 'antd';
 import style from "../classList/ClassList.module.scss"
 import classNames from 'classnames'
 import { studentListApi } from '../../../server';
+import { studentSaveApi } from '../../../server';
+import { studentDelApi } from '../../../server';
+import { studentParams } from '../../../types/api';
 
 type T = {
     
@@ -13,7 +16,7 @@ type T = {
 
 type GithubIssueItem = {
     url: string | undefined;
-    id: Key;
+    id: String | Number;
     age: Number,
     avator: String,
     classId: String,
@@ -29,8 +32,16 @@ type GithubIssueItem = {
     status: Number,
     username: String,
     __v: Number,
-    _id: String,
+    _id: string ,
 };
+
+type studentItem = {
+    classify: String,
+    _id: String | Number,
+    name: String,
+    students:  T,
+    teacher: String,
+}
 
 const columns: ProColumns<GithubIssueItem>[] = [
     {
@@ -85,7 +96,7 @@ const columns: ProColumns<GithubIssueItem>[] = [
               },
           ],
       },
-  },
+    },
     {
         disable: true,
         title: '班级',
@@ -129,12 +140,14 @@ const columns: ProColumns<GithubIssueItem>[] = [
 const StudentMain: React.FC = () => {
   const actionRef = useRef<ActionType>();
 
-  const request = async(params: any, sort: any, filter: any) => {
+  const request = async( params: studentParams, sort: any, filter: any) => {
     try{
-        const res = await studentListApi(params)
+        const res = await studentListApi({...params})
+        // console.log({...params,page:params.current,current:undefined})
         console.log(res)
+
         const list = res.data.data?.list || []
-        list.forEach(v => {
+        list.forEach((v: { createTime: string | number | Date; }) => {
             v.createTime = new Date(v.createTime).toLocaleString() || ''
         })
         const data = list.map((item: any) => ({
@@ -155,6 +168,25 @@ const StudentMain: React.FC = () => {
             total: 0,
         }
     }
+
+}
+
+const toSave = async (v: any,i: any) => {
+    const res = await studentSaveApi(v,{...i,
+        createTime:undefined,
+        creator:undefined,
+        rowKey:undefined,
+        __v:undefined,
+        _id:undefined,
+        index:undefined
+    })
+    // console.log(res)
+}
+
+const toDel = async (v: any,i: any) => {
+    const res = await studentDelApi(v)
+    // console.log(res)
+
 }
 
   return (
@@ -166,6 +198,9 @@ const StudentMain: React.FC = () => {
                 request={request}
                 editable={{
                     type: 'multiple',
+                    onSave: toSave,
+                    onDelete: toDel,
+
                 }}
                 columnsState={{
                     persistenceKey: 'pro-table-singe-demos',
@@ -206,7 +241,7 @@ const StudentMain: React.FC = () => {
                 headerTitle="班级列表"
                 toolBarRender={() => [
                     <Button
-                        // key="button"
+                        key="button"
                         icon={<PlusOutlined />}
                         onClick={() => {
                             actionRef.current?.reload();
