@@ -8,7 +8,8 @@ import {
   // studentParams,
   UserParams,
   UserResponse,
-  userStateParams
+  userStateParams,
+  createTestType
 } from "../types/api"
 
 export const loginApi = (params: LoginParams) => {
@@ -52,9 +53,10 @@ export const updateApi = (id: string) => {
 export const examListApi = () => {
   return request.get('/examination/list?creator=root')
 }
-// 删除考试
-export const removeExamListApi = () => {
-  return request.get('/examination/remove')
+
+// 删除考试 
+export const removeExamListApi = (id:number)=>{
+  return request.get(`/examination/remove?${id}`)
 }
 // 班级管理接口
 // 班级列表数据
@@ -93,6 +95,7 @@ export const studentCreateApi = (time: number, params?: classParams) => {
 }
 
 
+
 // 用户信息
 export const userInfoApi = () => {
   return request.get('/user/info')
@@ -124,3 +127,16 @@ export const userDelApi = (id: string) => {
 export const userRoleList = () => {
   return request.get('/role/list')
 }
+// 查询试卷详情id
+export const examDetailApi = (id:number) => {
+  return request.get(`/exam/detail?id=${id}`)
+}
+// 搜索试卷
+export const examinationlApi = (v:any) => {
+  return request.get(`examination/list?${v}`)
+}
+// 创建考试试卷 https://zyxcl.xyz/exam_api/examination/create?1723711365616
+export const createTestApi = (time:number, createDate:createTestType) => {
+  return request.post(`/examination/create?${time}`, createDate)
+}
+

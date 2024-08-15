@@ -29,7 +29,7 @@ export type UpdateParams = {
   question:string
 }
 
-export interface DataType {
+export interface ExamListDataType {
   key?: string;
   classify?: string
   createTime?: string
@@ -138,3 +138,50 @@ export type UserParams = {
   username?:string
 }
 export type UserResponse = BaseValuse<User>
+// 创建考试
+export type createExam={
+  name?:string,
+  classify?: string,
+  examId?: string,
+  creator?: string,
+  group?:string,
+  examiner?:string,
+  startTime?: number|string,
+  endTime?:number|string,
+  createTime?:string|number,
+  status?:string
+}
+export type examcheng ={
+  classify?: string
+  createTime?: number
+  creator?: string
+  endTime?: number
+  examId?: string
+  examiner?: string[]
+  group?: null[]
+  name?: string
+  questionsList?:{
+          answer:  string
+          classify: string
+          options:  string[]
+          question:  string
+          type:  string
+          __v: number
+          _id:  string}[],
+  startTime?: number
+  status?: number
+  __v?: number
+  _id?: string
+  key?:string
+}
+// 创建考试
+export interface createTestType {
+  classify:string;
+  endTime:string|number;
+  examId:string;
+  examiner:string;
+  group:string;
+  name:string;
+  startTime:string|number;
+}
+
