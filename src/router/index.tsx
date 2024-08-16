@@ -24,7 +24,7 @@ const Permissions = lazy(() =>import('../pages/permissions/Permissions.tsx'))
 const routes = [
     {
         path:'/',
-        element:<Navigate to='/home' />
+        element:<Navigate to='/question' />
     },
     {
         path:'/home',

@@ -70,8 +70,8 @@ export const classSaveApi = (id: any, it: any) => {
   return request.post('/studentGroup/update', { id, ...it })
 }
 // 创建班级数据
-export const classCreateApi = (params?: classParams) => {
-  return request.get(`/studentGroup/create`, { params })
+export const classCreateApi = ( time: number , params?: classParams) => {
+  return request.post(`/studentGroup/create?${time}`, params)
 }
 
 // 学生管理接口
