@@ -16,7 +16,7 @@ const CreateExam: React.FC= () => {
   //考试试卷信息
   const [selectedRows,setSelectedRows] = useState<examcheng[]>([])
   // 考试配置信息
-  const [creFrom, setCreFrom] = useState<examcheng[]>([])
+  const [creFrom, setCreFrom] = useState<any[]>([])
   // 
   // const [examChang, setexamChang] = useState<createTestType[]>([])
   const conExam = async (a:string)=>{

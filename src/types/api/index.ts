@@ -53,6 +53,16 @@ export type classParams = {
   classify?: String,
   
 }
+
+export type classCreat = {
+  classify: string;
+  name: string
+  students: string[]
+  teacher: string
+  page: string | number
+  pagesize: string | number
+}
+
 export type studentParams = {
   [x: string]: string | number,
   page: string | number;
@@ -81,12 +91,12 @@ export type studentObj = {
 export type studentCreat = {
   page: string;
   pagesize: string;
-  age: string;
+  age: number | string;
   avator: string;
   className: string;
   email: string;
   idCard: string;
-  password: number;
+  password: number | string;
   sex: string;
   status: number;
   username: string;
