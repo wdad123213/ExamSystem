@@ -16,7 +16,7 @@ const ExamList: React.FC<any> = (props) => {
   const [obj1,setobj1] = useState('')
   const [obj2,setobj2] = useState('')
   const [open, setOpen] = useState(false);
-  const [size, setSize] = useState<SizeType>('large'); // default is 'middle'
+  const [size] = useState<SizeType>('large'); // default is 'middle'
   const [isShow, setIsShow] = useState(false)
   const [examList, setExamList] = useState([])
   const [examQuest,setExamQuest] = useState([])
@@ -111,6 +111,7 @@ const ExamList: React.FC<any> = (props) => {
         endTime: '',    
       }
       setResList(obj)
+      awlist()
     }
   };
 
@@ -128,6 +129,7 @@ const ExamList: React.FC<any> = (props) => {
       
     }
     setResList(obj)
+    awlist()
     
   
 
@@ -213,9 +215,9 @@ const ExamList: React.FC<any> = (props) => {
     {
       title: '操作',
       render: (_, action) =>
-        <button onClick={()=>props.changePageExam(action._id)}>
+        <Button type="primary" onClick={()=>props.changePageExam(action._id)}>
           成绩分析
-        </button>
+        </Button>
     }
   ];
   

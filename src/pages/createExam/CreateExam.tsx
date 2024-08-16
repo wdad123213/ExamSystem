@@ -51,9 +51,9 @@ const CreateExam: React.FC= () => {
       startTime:  Date.parse(creFrom.time[0]),
       endTime:  Date.parse(creFrom.time[1]),
     }
+    console.log(arr)
     const newtime =  Date.now()
     createTest(newtime,arr)
-
   }
 
    const createTest =(a: number,b: createTestType)=>{
