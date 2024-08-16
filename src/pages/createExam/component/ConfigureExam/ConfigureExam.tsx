@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react'
-import { Divider, Radio, Table } from 'antd';
+import React from 'react'
+import { Divider, Table,Button, Flex } from 'antd';
 import type { TableColumnsType } from 'antd';
 import { examcheng } from '../../../../types/api';
+
 type propstype ={
     nextPage:()=>void
     upPage:()=>void
     conExamList:examcheng[]
     setconExamList:(a:examcheng[])=>void
-    setSelectedRows:(a:examcheng[])=>void
+    setSelectedRows:(a: DataType[]) => string | number | void
   }
 
 interface DataType {
@@ -18,10 +19,8 @@ interface DataType {
     createTime?: number|string;
   }
 const ConfigureExam:React.FC<propstype> = (props) => {
-    // const [conExamList,setConExamList] = useState<string[]>([])
+
     console.log(props.conExamList)
-  
-    // console.log(props.conExamList)
 
   const columns: TableColumnsType<DataType> = [
     {
@@ -67,21 +66,30 @@ const ConfigureExam:React.FC<propstype> = (props) => {
                 ...rowSelection,
             }}
             columns={columns}
-            dataSource={props.conExamList}
+            dataSource ={props.conExamList}
             />
 
         </div>
       
         <div>
-            <button onClick={()=>{
+        <Flex gap="middle" wrap>
+          <Button 
+            type="primary"
+            autoInsertSpace={false} 
+            onClick={()=>{
                 props.upPage()
-                console.log(1111)
-
-            }} >上一页</button>
-            <button onClick={(e)=>{
-                props.nextPage()
-                console.log(e)
-                }}>下一页</button>
+            }}>
+            上一页
+          </Button>
+          <Button 
+            type="primary" 
+            autoInsertSpace 
+            onClick={()=>{
+              props.nextPage()
+            }}>
+            下一页
+          </Button>
+        </Flex>
         </div>
     </div>
   )

@@ -1,6 +1,5 @@
 import React, { useEffect, useState }  from 'react'
-import { Steps, DatePicker, Input, Button, Cascader, Form, } from 'antd';
-import { Value } from 'sass';
+import { DatePicker, Input, Button,  Form, Select} from 'antd';
 import type { CascaderProps } from 'antd';
 import {examListApi } from '../../../../server';
 
@@ -16,108 +15,71 @@ const { RangePicker } = DatePicker;
 
 
 const createFrom:React.FC<propstype> = ( props) => {
-    const [allClassify,setAllClassify] = useState('')
-    const awlist = async () => {
-        const res = await examListApi()
-        setAllClassify([...new Set((res.data.data.list).map((item: { classify:string; })=>item.classify))])
-        // console.log([new Set((res.data.data.list).map((item: { classify: string; })=>item.classify))])
-        // const newArr = [res.data.data.list]
-        
-    }
+  const [allClassify,setAllClassify]= useState<DataNodeType[]> ([])
+  const [allExaminer,setAllExaminer] = useState<DataNodeType[]> ([])
+  const [allGroup,setAllGroup] = useState<DataNodeType[]> ([])
+  const awlist = async () => {
+      const res = await examListApi()
+      let list = res.data.data.list
+      console.log(list)
+      let map:any = {}
+      let next:any = {}
+      let group:any ={}
+      list.forEach((v: {
+        [x: string]: string; classify: string; }) =>{
+        map[v.classify] = {
+          lable : v.classify,
+          value : v.classify,
+          // isLeaf: false,
+        }
+        next[v.examiner] = {
+          lable : v.examiner[0],
+          value : v.examiner[0],
+        }
+        group[v.group] = {
+          lable : v.group[0],
+          value : v.group[0],
+        }
+      })
+      setAllClassify(Object.values(map))
+      setAllExaminer(Object.values(next))
+      setAllGroup(Object.values(group))
+  }
+ console .log(allClassify,allGroup)
+
   interface DataNodeType {
     value: string;
     label: string;
     }
 
-    const tailFormItemLayout = {
-    wrapperCol: {
-        xs: {
-        span: 20,
-        offset: 0,
-        },
-        sm: {
-        span: 16,
-        offset: 8,
-        },
-    },
-    };
+  const tailFormItemLayout = {
+  wrapperCol: {
+      xs: {
+      span: 20,
+      offset: 0,
+      },
+      sm: {
+      span: 16,
+      offset: 8,
+      },
+  },
+  };
 
-    const formItemLayout = {
-    labelCol: {
-        xs: { span: 24 },
-        sm: { span: 8 },
-    },
-    wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 },
-    },
-    };
-    // const initvalve =[
-    //    { 
-    //     value: '',
-    //     label: '',
-    //     }
+  const formItemLayout = {
+  labelCol: {
+      xs: { span: 24 },
+      sm: { span: 8 },
+  },
+  wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 16 },
+  },
+  };
 
-    // ]
+  const residences: CascaderProps<DataNodeType>['options'] = allClassify;
+  const examiner: CascaderProps<DataNodeType>['options'] = allExaminer
+  const group: CascaderProps<DataNodeType>['options'] = allGroup
 
-    // const arr =()=>{
-    //     allClassify.map(item=>{
-    //         initvalve.value:item
-    //         initvalve[label]:item
-    //         })
-
-    // }
-
-    const residences: CascaderProps<DataNodeType>['options'] = [
-    // allClassify.map(item=>{
-        
-    //     // value: item,
-    //     // label: item,
-
-    // })
-    {
-        value: '英语',
-        label: '英语',
-
-    },
-    
-    
-    ];
-    const examiner: CascaderProps<DataNodeType>['options'] = [
-    {
-        value: '吴江',
-        label: '吴江',
-
-    },
-    {
-        value: '叶一耶',
-        label: '叶一耶',
-
-    },
-    {
-        value: 'root',
-        label: 'root',
-
-    },
-
-    ]
-    const group: CascaderProps<DataNodeType>['options'] = [
-    {
-        value: 'rooter',
-        label: 'rooter',
-
-    },
-    {
-        value: '一班',
-        label: '一班',
-
-    },
-    {
-        value: '六班',
-        label: '六班',
-
-    },
-    ]
 
   useEffect(()=>{
     awlist()
@@ -135,14 +97,14 @@ const createFrom:React.FC<propstype> = ( props) => {
     console.log('输入内容 ', values);
     props.setCreFrom(values)
     props.getexamPage(values)
-    console.log(Object.values(values)[2])
-    console.log(Object.keys(values)[2])
-    console.log(Object.entries(values))
-    // console.log(Object.values(classify))
     if (values) {
         props.nextPage()
     }
   };
+  useEffect(()=>{
+
+  },[])
+
   return (
     <div>
       <div>
@@ -151,7 +113,6 @@ const createFrom:React.FC<propstype> = ( props) => {
           form={form}
           name="register"
           onFinish={onFinish}
-          // initialValues={{ residence: ['zhejiang', 'hangzhou', 'xihu'], prefix: '86' }}
           style={{ maxWidth: 600 }}
           scrollToFirstError
         >
@@ -179,58 +140,54 @@ const createFrom:React.FC<propstype> = ( props) => {
           <Form.Item
             name="classify"
             label="考试科目"
+            
             rules={[
               {
+                // filterOption :false
                 // type: 'array', 
                 required: true,
                 message: '此项为必填项!'
               },
             ]}
           >
-            <Cascader options={residences} />
+            <Select
+               showSearch
+                options={residences}
+            />
           </Form.Item>
           <Form.Item
             name="examiner"
             label="监考人"
             rules={[
               {
-                // type: 'array', 
                 required: true,
                 message: '此项为必填项!'
               },
             ]}
           >
-            <Cascader options={examiner} />
+            <Select options={examiner} />
           </Form.Item>
           <Form.Item
             name="group"
             label="考试班级"
             rules={[
               {
-                // type: 'array', 
                 required: true,
                 message: '此项为必填项!'
               },
             ]}
           >
-            <Cascader options={group} />
+            <Select options={group} />
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>
             <Button
               type="primary"
               htmlType="submit"
-              // onClick={()=>{
-              //   props.setCreFrom(Value)
-              //   console.log(Value)
-              // }
-              // }
             >
               下一页
             </Button>
           </Form.Item>
         </Form>
-
-
       </div>
     </div>
   )

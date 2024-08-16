@@ -9,8 +9,6 @@ const CreateExam:React.FC = () => {
   const examDetail = async (id:number) => {
     const res = await examDetailApi(id)
     console.log(res)
-    // const newArr = [res.data.data.list]
-    // setExamList(res.data.data.list)
   }
 
 
