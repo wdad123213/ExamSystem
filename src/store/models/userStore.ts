@@ -8,6 +8,7 @@ interface userState {
 
 export const getUserInfo = createAsyncThunk('getUserInfo', async () => {
   const res = await userInfoApi()
+  console.log(11111,res)
   return res.data
 })
 

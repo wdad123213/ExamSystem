@@ -7,7 +7,8 @@ import {
   studentParams,
   UserParams,
   UserResponse,
-  userStateParams
+  userStateParams,
+  RoleResponse, UserUpdataParams
 } from "../types/api"
 
 export const loginApi = (params: LoginParams) => {
@@ -83,5 +84,17 @@ export const userDelApi = (id:string) => {
 
 // 角色列表
 export const userRoleList = () => {
-  return request.get('/role/list')
+  return request.get<RoleResponse>('/role/list')
+}
+
+// 上传头像
+export const userAvatarApi = (avatar: string | File | Blob) => {
+  const formData = new FormData()
+  formData.append('avatar', avatar)
+  return request.post('/profile', formData)
+}
+
+// 修改个人信息
+export const userUpdateInfoApi = (params:UserUpdataParams) => {
+  return request.post<BaseResponse>('/user/update/info',params)
 }
