@@ -8,6 +8,8 @@ import {
   // studentParams,
   UserParams,
   UserResponse,
+  RoleResponse,
+  UserUpdataParams,
   userStateParams,
   createTestType
 } from "../types/api"
@@ -21,10 +23,6 @@ export const captchaApi = () => {
 }
 
 export const questionList = (type: string = '', subjectType: string = '', keyword: string = '') => {
-  // if (type === '' && subjectType === '' && keyword==='') return request.get(`/question/list`)
-  // if (type !== '' && subjectType === '') return request.get(`/question/list?type=${type}`)
-  // if (type === '' && subjectType !== '') return request.get(`/question/list?classify=${subjectType}`)
-  // return request.get(`/question/list?question=${keyword}`)
   let query = '';
   if (type) query += `type=${type}&`;
   if (subjectType) query += `classify=${subjectType}&`;
@@ -54,7 +52,7 @@ export const examListApi = () => {
   return request.get('/examination/list?creator=root')
 }
 
-// 删除考试 
+// 删除考试
 export const removeExamListApi = (id:number)=>{
   return request.get(`/examination/remove?${id}`)
 }
@@ -125,7 +123,19 @@ export const userDelApi = (id: string) => {
 
 // 角色列表
 export const userRoleList = () => {
-  return request.get('/role/list')
+  return request.get<RoleResponse>('/role/list')
+}
+
+// 上传头像
+export const userAvatarApi = (avatar: string | File | Blob) => {
+  const formData = new FormData()
+  formData.append('avatar', avatar)
+  return request.post('/profile', formData)
+}
+
+// 修改个人信息
+export const userUpdateInfoApi = (params:UserUpdataParams) => {
+  return request.post<BaseResponse>('/user/update/info',params)
 }
 // 查询试卷详情id
 export const examDetailApi = (id:number) => {

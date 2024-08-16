@@ -9,6 +9,12 @@ export interface BaseValuse<T> {
   data: T
 }
 
+export interface BaseReturn<T> {
+  list:T
+  total:number
+  totalPage:number
+}
+
 type Token = {
   token: string
 }
@@ -123,6 +129,9 @@ export type userInfo = {
   status: number
   __v: number
   avator?: string
+  age?: number
+  email?: string
+  sex?: '男' | '女'
 }
 
 // 用户更新
@@ -135,11 +144,7 @@ export type userStateParams = {
 }
 
 // 用户返回值
-type User ={
-  list:UserListType[]
-  total:number
-  totalPage:number
-}
+type User = BaseReturn<UserListType[]>
 
 export type UserParams = {
   page?:number
@@ -195,3 +200,37 @@ export interface createTestType {
   startTime:string|number;
 }
 
+
+// 角色列表
+export type RoleItemType = {
+  createTime: number
+  creator: string
+  disabled: boolean
+  name: string
+  permission: string[]
+  value : string
+  __v: number
+  _id: string
+}
+
+// 角色返回值
+export type RoleReturn = BaseReturn<RoleItemType[]>
+
+// 角色接口返回值
+export type RoleResponse = BaseValuse<RoleReturn>
+
+// 基础下拉框
+export type OptionItem = {
+  value: string,
+  label: string
+}
+
+// 用户更新
+export type UserUpdataParams = {
+  [x: string]: string | number | undefined
+  age?: number
+  email?: string
+  sex?: string
+  username?: string
+  avator?: string
+}
