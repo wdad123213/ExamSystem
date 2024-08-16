@@ -1,6 +1,6 @@
 import React from 'react'
 import {Form, FormInstance, Input, Select} from "antd"
-import {UserUpdataParams} from "../../types/api"
+import {UserUpdataParams} from "../../../types/api"
 
 interface PropsType {
   form: FormInstance<UserUpdataParams>

@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import { Descriptions } from 'antd'
-import {UserUpdataParams} from "../../types/api"
-import {useAppDispatch, useAppSelector} from "../../hooks/store.ts"
-import {getUserInfo} from "../../store/models/userStore.ts"
+import {UserUpdataParams} from "../../../types/api"
+import {useAppDispatch, useAppSelector} from "../../../hooks/store.ts"
+import {getUserInfo} from "../../../store/models/userStore.ts"
 
 // 格式化用户信息
 const formatUserList = (obj:UserUpdataParams) => {

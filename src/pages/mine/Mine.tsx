@@ -3,8 +3,8 @@ import { LoadingOutlined, PlusOutlined } from '@ant-design/icons'
 import {message, Upload, Space, Button, Form, Modal} from 'antd'
 import type { GetProp, UploadProps } from 'antd'
 import {userAvatarApi, userUpdateInfoApi} from "../../server"
-import UserInfo from "./UserInfo.tsx"
-import UserForm from "./UserForm.tsx"
+import UserInfo from "./compontents/UserInfo.tsx"
+import UserForm from "./compontents/UserForm.tsx"
 import {UserUpdataParams} from "../../types/api"
 import {useAppDispatch, useAppSelector} from "../../hooks/store.ts"
 import {getUserInfo} from "../../store/models/userStore.ts"
@@ -104,6 +104,8 @@ const Mine: React.FC = () => {
                             message.success('头像更换成功')
                         }else {
                             message.error(res.data.msg)
+                            // @ts-ignore
+                            options.onError()
                         }
                     }catch (e) {
                         console.log(e)
