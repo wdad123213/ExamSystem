@@ -1,14 +1,12 @@
-import React, { useEffect, useState, } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import type { TableProps } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Form, Input, InputNumber, Popconfirm, Table, Typography, Button, Space, Drawer } from 'antd';
 import { questionList, updateApi, removeApi } from '../../../server';
 import Item from './Item';
 import type { DrawerProps } from 'antd';
-import * as XLSX from 'xlsx'
-// import * as docx from 'docx';
-// import { jsPDF } from 'jspdf';
-
+import { jsPDF } from 'jspdf';
+import domtoimage from 'dom-to-image'
 interface Item {
     key: string;
     question: string;
@@ -68,51 +66,79 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
         </td>
     );
 };
-
 const QuestionItem: React.FC<{
     type: string;
     subjectType: string;
     keyword: string;
 }> = (props) => {
-    const feExportExcel = (detail: Item) => {
-        const data = [
-            [
-                detail.question,
-                detail.type,
-                detail.classify,
-                detail.time,
-                detail.options.join(', '),
-                detail.answer,
-            ],
-        ];
-        // console.log(data)
-        const worksheet = XLSX.utils.aoa_to_sheet(data);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'detailSheet');
-        XLSX.writeFile(workbook, '试题.xlsx');
-    }
-    // const exportToPDF = (detail: { question: string | string[]; type: string; classify: any; time: any; options: any[]; answer: string | string[]; key: any; }) => {
-    //     const doc = new jsPDF();
+    const domRef = useRef(null)
+    const exportPDF = async (title: string, ref: HTMLDivElement) => {
+        console.log(ref)
+        // 根据dpi放大，防止图片模糊
+        const scale = window.devicePixelRatio > 1 ? window.devicePixelRatio : 2;
+        // 下载尺寸 a4 纸 比例
+        const pdf = new jsPDF('p', 'pt', 'a4');
+        let width = ref.offsetWidth;
+        let height = ref.offsetHeight;
+        const canvas = document.createElement('canvas');
+        canvas.width = width * scale;
+        canvas.height = height * scale;
+        const contentWidth = canvas.width;
+        const contentHeight = canvas.height;
+        // 一页pdf显示html页面生成的canvas高度;
+        const pageHeight = contentWidth / 592.28 * 841.89;
+        // 未生成pdf的html页面高度
+        let leftHeight = contentHeight;
+        // 页面偏移
+        let position = 0;
+        // a4纸的尺寸[595.28,841.89]，html页面生成的canvas在pdf中图片的宽高
+        const imgWidth = 595.28;
+        const imgHeight = 592.28 / contentWidth * contentHeight;
+        // 使用 dom-to-image-more 生成图片
+        const imgDataUrl = await domtoimage?.toPng(ref, {
+            width: width * scale,
+            height: height * scale,
+            style: {
+                transform: `scale(${scale})`,
+                transformOrigin: 'top left',
+                // 确保内容不被遮盖
+                position: 'absolute',
+                left: '0',
+                top: '0',
+                margin: '0'
+            }
+        });
 
-    //     const font = 'songti';
-    //     doc.addFileToVFS(font, '');
-    //     doc.addFont(font, 'SimSun', 'normal');
-    //     doc.setFont('SimSun');
-    //     doc.text(detail.question, 10, 10);
-    //     doc.text(`类型：${detail.type === '1' ? '单选题' : '多选题'}`, 10, 20);
-    //     doc.text(`分类：${detail.classify}`, 10, 30);
-    //     doc.text(`创建时间：${detail.time}`, 10, 40);
-    //     doc.text('选项：', 10, 50);
-    //     detail.options.forEach((option, index) => {
-    //         doc.text(`选项${index + 1}: ${option}`, 10, 60 + index * 10);
-    //     });
-    //     doc.text('答案：', 10, 80 + detail.options.length * 10);
-    //     doc.save(`试题_${detail.key}.pdf`);
-    // };
+        if (height > 14400) { // 超出jspdf高度限制时
+            const ratio = 14400 / height;
+            width *= ratio;
+        }
+
+        // 缩放为 a4 大小  pdf.internal.pageSize 获取当前pdf设定的宽高
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        height = height * pdfWidth / width;
+        width = pdfWidth;
+        if (leftHeight < pageHeight) {
+            pdf.addImage(imgDataUrl, 'png', 0, 0, imgWidth, imgHeight);
+        } else {    // 分页
+            while (leftHeight > 0) {
+                pdf.addImage(imgDataUrl, 'png', 0, position, imgWidth, imgHeight);
+                leftHeight -= pageHeight;
+                position -= 841.89;
+                // 避免添加空白页
+                if (leftHeight > 0) {
+                    pdf.addPage();
+                }
+            }
+        }
+        // 导出下载
+        await pdf.save(`${title}.pdf`);
+    }
     const [detail, setDetail] = useState<Item>()
     const [open, setOpen] = useState(false);
     const [size, setSize] = useState<DrawerProps['size']>();
     const [newClassify, setNewClassify] = useState<string[]>([])
+
     const showDefaultDrawer = (record: Partial<Item> & { key: React.Key }) => {
         // console.log(record)
         setDetail(record);
@@ -127,7 +153,6 @@ const QuestionItem: React.FC<{
     let originData: Item[] = [];
     const [form] = Form.useForm();
     const [data, setData] = useState<Item[]>([]);
-    // const [data, setData] = useState(originData);
     const [editingKey, setEditingKey] = useState('');
     const getList = async (value: string = '', subject: string = '', keyword: string = '') => {
         setLoading(true);
@@ -166,7 +191,7 @@ const QuestionItem: React.FC<{
         getList()
     }, [])
     useEffect(() => {
-        getList(props.type,props.subjectType,props.keyword)
+        getList(props.type, props.subjectType, props.keyword)
     }, [props])
     const isEditing = (record: Item) => record.key === editingKey;
     const edit = (record: Partial<Item> & { key: React.Key }) => {
@@ -243,7 +268,6 @@ const QuestionItem: React.FC<{
             dataIndex: 'time',
             width: '30%',
             editable: true,
-
         },
         {
             align: 'center',
@@ -294,14 +318,14 @@ const QuestionItem: React.FC<{
                                 rootStyle={{ opacity: 0.8 }}
                                 extra={
                                     <Space>
-                                        <Button onClick={() => detail && feExportExcel(detail)}>导出试题</Button>
+                                        <Button onClick={() => exportPDF(detail?.question, domRef.current)}>导出试题</Button>
                                         <Button type="primary" onClick={onClose}>
                                             返回
                                         </Button>
                                     </Space>
                                 }
                             >
-                                <div>
+                                <div ref={domRef}>
                                     {detail && (
                                         <>
                                             <p>

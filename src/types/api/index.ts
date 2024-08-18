@@ -14,7 +14,7 @@ type Token = {
 }
 
 // 登录
-export type LoginParams = Record<'username' | 'password'|'code', string>
+export type LoginParams = Record<'username' | 'password' | 'code', string>
 export type LoginResponse = BaseResponse & {
   data: Token
 }
@@ -22,13 +22,22 @@ export type LoginResponse = BaseResponse & {
 //试题库
 export type SearchParams = Record<'page' | 'pageSize' | 'keyWord' | 'type' | 'name', string>
 export type RemoveParams = {
-  id:string
+  id: string
 }
 export type UpdateParams = {
   id: string,
-  question:string
+  question: string
 }
 
+
+export type CreateQuestionParams = {
+  question: string,
+  decs: string,
+  answer: string | string[],
+  classify: string,
+  options: string[],
+  type: string
+}
 export interface DataType {
   key?: string;
   classify?: string
@@ -40,7 +49,7 @@ export interface DataType {
   group?: string[]
   name?: string
   questionsList?: string[]
-  startTime?:  String
+  startTime?: String
   _id?: string
   status?: number
 }
@@ -51,7 +60,7 @@ export type classParams = {
   name?: String,
   teacher?: String,
   classify?: String,
-  
+
 }
 export type studentParams = {
   [x: string]: string | number,
@@ -101,8 +110,8 @@ export interface UserListType {
   username: string
   __v: number
   _id: string
-  rowKey?:string
-  avator?:string
+  rowKey?: string
+  avator?: string
 }
 
 // 用户信息
@@ -121,20 +130,20 @@ export type userStateParams = {
   status: number
   password?: string
   username?: string
-  confirm?:string
+  confirm?: string
 }
 
 // 用户返回值
-type User ={
-  list:UserListType[]
-  total:number
-  totalPage:number
+type User = {
+  list: UserListType[]
+  total: number
+  totalPage: number
 }
 
 export type UserParams = {
-  page?:number
+  page?: number
   pagesize?: number
-  status?:number
-  username?:string
+  status?: number
+  username?: string
 }
 export type UserResponse = BaseValuse<User>

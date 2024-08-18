@@ -1,13 +1,14 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import Manual from "./components/Manual.tsx"
 import Batch from "./components/Batch.tsx"
 import style from "./addQuestion.module.scss"
 
-const AddQuestions:React.FC = () => {
-  const [curInfo,setCurInfo] = useState(0)
-  const addType = ():JSX.Element => {
-    return curInfo? <Batch/> : <Manual />
+const AddQuestions: React.FC = () => {
+  const [curInfo, setCurInfo] = useState(0)
+  const addType = (): JSX.Element => {
+    return curInfo ? <Batch /> : <Manual />
   }
+ 
   return (
     <div>
       <nav className={style.nav}>

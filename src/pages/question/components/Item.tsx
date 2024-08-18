@@ -17,6 +17,7 @@ interface TypeItem {
 //   label: string,
 //   value: string,
 // }
+
 const Item: React.FC = () => {
   const [subjectList, setSubjectList] = useState<TypeItem[]>([])
   const navigate = useNavigate();
@@ -25,7 +26,6 @@ const Item: React.FC = () => {
   const [type, setType] = useState<string>('')
   const [subjectType, setSubjectType] = useState<string>('')
   const [keyword, setKeyword] = useState<string>('')
-  // const [list, setList] = useState<TypeItem[]>()
   const go = () => {
     navigate('/addQuestions')
   }
@@ -45,7 +45,7 @@ const Item: React.FC = () => {
   const change = async (value: string) => {
     setType(value)
   }
-  const changeSubject = async (value: string, option: { value: string, label: string }) => {
+  const changeSubject = async (_value: string, option: { value: string, label: string }) => {
     setSubjectType(option.label)
 
   }
@@ -121,7 +121,7 @@ const Item: React.FC = () => {
               (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
             }
             onSelect={changeSubject}
-            options={subjectList}
+            options ={subjectList}
           />
         </div>
       </header>

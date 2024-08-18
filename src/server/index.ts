@@ -8,7 +8,9 @@ import {
   // studentParams,
   UserParams,
   UserResponse,
-  userStateParams
+  userStateParams,
+  UpdateParams,
+  CreateQuestionParams
 } from "../types/api"
 
 export const loginApi = (params: LoginParams) => {
@@ -45,8 +47,12 @@ export const searchList = (type: string = '') => {
 export const removeApi = (params: RemoveParams) => {
   return request.post(`/question/remove`, params)
 }
-export const updateApi = (id: string) => {
-  return request.post(`/question/update?${id}`)
+
+export const createQuestion = (params: CreateQuestionParams,id:number) => {
+  return request.post(`/question/create?${id}`, params)
+}
+export const updateApi = (params: UpdateParams) => {
+  return request.post(`/question/update`,params)
 }
 //考试列表
 export const examListApi = () => {
@@ -91,8 +97,6 @@ export const studentSaveApi = (id: any, it: any) => {
 export const studentCreateApi = (time: number, params?: classParams) => {
   return request.post(`/student/create?${time}`, params)
 }
-
-
 // 用户信息
 export const userInfoApi = () => {
   return request.get('/user/info')
