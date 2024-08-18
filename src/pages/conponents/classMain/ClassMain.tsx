@@ -6,8 +6,8 @@ import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable, TableDropdown } from '@ant-design/pro-components';
 import { Button, Dropdown, Space, Tag } from 'antd';
-import { classDelApi , classSaveApi , userListApi} from '../../../server';
-import { classParams , UserParams } from '../../../types/api';
+import { classDelApi , classSaveApi , userListApi, classCreateApi} from '../../../server';
+import { classParams , UserParams , classCreat } from '../../../types/api';
 
 import { Col, DatePicker, Drawer, Form, Input, Row, Select } from 'antd';
 
@@ -42,7 +42,10 @@ type classItem = {
 const ClassMain: React.FC = () => {
     
     const [teachList,setTeachList] = useState<any>([])
+    const [creatMapList,setCreatMapList] = useState<any>([])
+    const [creatMapIfy,setCreatMapIfy] = useState<any>([])
     const [nameList,setNameList] = useState<any>([])
+    const [form] = Form.useForm()
 
     
     const actionRef = useRef<ActionType>();
@@ -55,13 +58,60 @@ const ClassMain: React.FC = () => {
             map[it.teacher] = it.teacher
         })
         setTeachList(map)
-        console.log(map ,list)
 
         const obj:any = {}
         list.forEach((v: { name: string; }) => {
             obj[v.name] = v.name
         })
         setNameList(obj)
+
+        const creatMap:any = {}
+        list.forEach((it: {
+            [x: string]: string; _id:string ,className: string, classIfy: string}) => {
+            creatMap[it.teacher] = {
+                teacher: it.teacher,
+                _id: it._id,
+                classify: it.classify
+            }
+        })
+        
+        setCreatMapList(creatMap)
+
+        const ifyMap:any = {}
+        list.forEach((it: {classify: string}) => {
+            ifyMap[it.classify] = {
+                classify: it.classify
+            }
+        })
+        console.log(ifyMap)
+        setCreatMapIfy(ifyMap)
+
+    }
+
+
+    const classCreate = async ( time:number ) => {
+        let value = await form.validateFields()
+        console.log(value)
+        const obj:classCreat = {
+            page: '1',
+            pagesize: '5',
+            classify: value.classify,
+            name: value.classname,
+            students: [],
+            teacher: value.teacher
+        }
+        const res = await classCreateApi(time , obj)
+        console.log(res)
+        setOpen(false);
+        // value = {
+        //     age: '',
+        //     classname: '',
+        //     email: '',
+        //     sex: '',
+        //     name: '',
+        //     card: '',
+        // }
+        userList()
     }
     useEffect(() => {
         userList()
@@ -88,21 +138,6 @@ const ClassMain: React.FC = () => {
                 ...item,
             }))
             console.log(data)
-
-            // const teacherData = res.data.data?.list || []
-            
-            // useEffect(() => {
-            //     const map = {}
-            //     teacherData.forEach((it: { teacher: string; }) => {
-            //         map[it.teacher] = it.teacher
-            //     })
-            //     setTeachList(map)
-
-            // },[])
-
-            // console.log(teachList);
-            
-            // console.log(arrMap)
 
             const total = res.data.data?.total || data.length
             return {
@@ -224,6 +259,7 @@ const ClassMain: React.FC = () => {
 
     return (
         <div className={classNames(style.ClassMain)}>
+            {/* {console.log(Object.values(creatMapIfy))} */}
             <ProTable<GithubIssueItem>
                 columns={columns}
                 actionRef={actionRef}
@@ -299,7 +335,7 @@ const ClassMain: React.FC = () => {
                                 <div style={{ position: 'absolute', left: "75%", top: '93%' }}>
                                     <Space>
                                         <Button onClick={onClose}>取消</Button>
-                                        <Button onClick={onClose}
+                                        <Button onClick={() => classCreate(Date.now())}
 
                                             type="primary">
                                             确认
@@ -308,42 +344,44 @@ const ClassMain: React.FC = () => {
                                 </div>
                             }
                         >
-                            <Form layout="vertical" hideRequiredMark>
+                            <Form layout="vertical" hideRequiredMark
+                            form={form}
+                            >
                                 <Row gutter={16}>
                                     <Col span={12}>
                                         <Form.Item
-                                            name="name"
+                                            name="classname"
                                             label="班级名称"
                                             rules={[{ required: true, message: 'Please enter user name' }]}
                                         >
                                             <Input placeholder="请输入名称" />
                                         </Form.Item>
                                     </Col>
-                                    {/* <Col span={5}>
+                                    <Col span={5}>
                                         <Form.Item
                                             name="teacher"
                                             label="老师"
                                             rules={[{ required: true, message: 'Please choose the approver' }]}
                                         >
                                             <Select placeholder="请选择">
-                                              {listProps.map( item => {
-                                                <Option value={Item.teacher}>{Item.teacher}</Option>
-
-                                              })  }
+                                            {Object.values(creatMapList).map( (item:any) => {
+                                                        return  <Option value={item.teacher}>{item.teacher}</Option>
+                                                })  }
                                             </Select>
                                         </Form.Item>
-                                    </Col> */}
+                                    </Col>
                                 </Row>
                                 <Row gutter={16}>
                                     <Col span={5}>
                                         <Form.Item
-                                            name="approver"
+                                            name="classify"
                                             label="班级进度"
                                             rules={[{ required: true, message: 'Please choose the approver' }]}
                                         >
                                             <Select placeholder="请选择">
-                                                <Option value="jack">语文</Option>
-                                                <Option value="tom">数学</Option>
+                                            {Object.values(creatMapIfy).map( (item:any) => {
+                                                        return  <Option value={item.classify}>{item.classify}</Option>
+                                                })  }
                                             </Select>
                                         </Form.Item>
                                     </Col>

@@ -16,6 +16,7 @@
     "@reduxjs/toolkit": "^2.2.7",
     "@types/dom-to-image": "^2.6.7",
     "antd": "^5.20.0",
+    "antd-img-crop": "^4.23.0",
     "axios": "^1.7.3",
     "classnames": "^2.5.1",
     "docx": "^8.5.0",

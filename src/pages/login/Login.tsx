@@ -32,7 +32,7 @@ const Login:React.FC = () => {
         </Flex>
       </div>
       <div className={style.from}>
-        {isteach?
+        {!isteach?
         <LoginSudent />
         :
         <LoginTeach />

@@ -11,7 +11,7 @@ const Login = lazy(() => import('../pages/login/Login.tsx'))
 const Mine = lazy(() => import('../pages/mine/Mine.tsx'))
 const Question = lazy(() =>import('../pages/question/Question.tsx'))
 const AddQuestions = lazy(() => import('../pages/addQuestions/AddQuestions.tsx'))
-const ExamList = lazy( () => import('../pages/exam/examList/ExamList.tsx'))
+const ExamList = lazy( () => import('../pages/exam/createExam/CreateExam.tsx'))
 const CreateExam = lazy( () => import('../pages/createExam/CreateExam.tsx'))
 const Test = lazy(() =>import('../pages/test/Test.tsx'))
 const AddTest = lazy(() => import('../pages/addTest/addTest.tsx'))
@@ -24,7 +24,7 @@ const Permissions = lazy(() =>import('../pages/permissions/Permissions.tsx'))
 const routes = [
     {
         path:'/',
-        element:<Navigate to='/home' />
+        element:<Navigate to='/question' />
     },
     {
         path:'/home',

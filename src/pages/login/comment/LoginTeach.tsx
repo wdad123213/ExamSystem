@@ -50,7 +50,7 @@ const LoginTeach:React.FC = () => {
         onFinish={onFinish}
 
         > 
-   <Form.Item
+        <Form.Item
             name="username"
             rules={[{ required: true, message: '请输入你的名字' }]}
         >

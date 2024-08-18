@@ -5,12 +5,14 @@ import {
   LoginParams,
   RemoveParams,
   classParams,
-  // studentParams,
   UserParams,
   UserResponse,
-  userStateParams,
   UpdateParams,
-  CreateQuestionParams
+  CreateQuestionParams,
+  RoleResponse,
+  UserUpdataParams,
+  userStateParams,
+  createTestType
 } from "../types/api"
 
 export const loginApi = (params: LoginParams) => {
@@ -22,10 +24,6 @@ export const captchaApi = () => {
 }
 
 export const questionList = (type: string = '', subjectType: string = '', keyword: string = '') => {
-  // if (type === '' && subjectType === '' && keyword==='') return request.get(`/question/list`)
-  // if (type !== '' && subjectType === '') return request.get(`/question/list?type=${type}`)
-  // if (type === '' && subjectType !== '') return request.get(`/question/list?classify=${subjectType}`)
-  // return request.get(`/question/list?question=${keyword}`)
   let query = '';
   if (type) query += `type=${type}&`;
   if (subjectType) query += `classify=${subjectType}&`;
@@ -58,9 +56,10 @@ export const updateApi = (params: UpdateParams) => {
 export const examListApi = () => {
   return request.get('/examination/list?creator=root')
 }
+
 // 删除考试
-export const removeExamListApi = () => {
-  return request.get('/examination/remove')
+export const removeExamListApi = (id:number)=>{
+  return request.get(`/examination/remove?${id}`)
 }
 // 班级管理接口
 // 班级列表数据
@@ -76,8 +75,8 @@ export const classSaveApi = (id: any, it: any) => {
   return request.post('/studentGroup/update', { id, ...it })
 }
 // 创建班级数据
-export const classCreateApi = (params?: classParams) => {
-  return request.get(`/studentGroup/create`, { params })
+export const classCreateApi = ( time: number , params?: classParams) => {
+  return request.post(`/studentGroup/create?${time}`, params)
 }
 
 // 学生管理接口
@@ -97,6 +96,7 @@ export const studentSaveApi = (id: any, it: any) => {
 export const studentCreateApi = (time: number, params?: classParams) => {
   return request.post(`/student/create?${time}`, params)
 }
+
 // 用户信息
 export const userInfoApi = () => {
   return request.get('/user/info')
@@ -126,5 +126,30 @@ export const userDelApi = (id: string) => {
 
 // 角色列表
 export const userRoleList = () => {
-  return request.get('/role/list')
+  return request.get<RoleResponse>('/role/list')
 }
+
+// 上传头像
+export const userAvatarApi = (avatar: string | File | Blob) => {
+  const formData = new FormData()
+  formData.append('avatar', avatar)
+  return request.post('/profile', formData)
+}
+
+// 修改个人信息
+export const userUpdateInfoApi = (params:UserUpdataParams) => {
+  return request.post<BaseResponse>('/user/update/info',params)
+}
+// 查询试卷详情id
+export const examDetailApi = (id:number) => {
+  return request.get(`/exam/detail?id=${id}`)
+}
+// 搜索试卷
+export const examinationlApi = (v:any) => {
+  return request.get(`examination/list?${v}`)
+}
+// 创建考试试卷 https://zyxcl.xyz/exam_api/examination/create?1723711365616
+export const createTestApi = (time:number, createDate:createTestType) => {
+  return request.post(`/examination/create?${time}`, createDate)
+}
+

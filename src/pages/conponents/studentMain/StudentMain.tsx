@@ -5,16 +5,14 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { Button, Space } from 'antd';
-import { studentListApi, studentSaveApi, studentDelApi , studentCreateApi} from '../../../server';
+import { studentListApi, studentSaveApi, studentDelApi , studentCreateApi , classListApi} from '../../../server';
 import { studentParams, studentObj, classParams, studentCreat } from '../../../types/api';
 import { Col, Drawer, Form, Input, Row, Select } from 'antd';
-
+import { Value } from 'sass';
 
 const { Option } = Select;
 
-type T = {
-
-}
+type T = {}
 
 type GithubIssueItem = {
     url: string | undefined;
@@ -54,39 +52,31 @@ const StudentMain: React.FC = () => {
         })
         setclassNameList(map)
 
+        const res2 = await classListApi()
+        const lists = res2.data.data.list
+        console.log(lists)
         const creatMap:any = {}
-        list.forEach((it: { _id:string ,className: string; }) => {
-            creatMap[it.className] = {
-                className: it.className,
+        lists.forEach((it: { _id: string; name: string; }) => {
+            creatMap[it.name] = {
+                name: it.name,
                 _id: it._id
             }
-            // creatMap[it._id] = it._id
         })
         setCreatMapList(creatMap)
     }
 
     const studentCreate = async ( time:number ) => {
 
-        const value = await form.validateFields()
-        console.log(value)
-        const obj:studentCreat = {
-            // ...value,
-            age: value.age,
-            className: value.classname,
-            email: value.email,
-            sex: value.sex,
-            username: value.name,
-            idCard: value.card,
-            avator: "",
-            status: 1,
+        let value = await form.validateFields()
+        const res = await studentCreateApi(time , {
+            ...value,
+            avator: '',
             password: 123,
-            page: '1',
-            pagesize: '5',
-
-        }
-        const res = await studentCreateApi(time , obj)
-        console.log(res)
+            status: 1,
+            age: value.age
+        })
         setOpen(false);
+        userList()
     }
     useEffect(() => {
         userList()
@@ -127,7 +117,6 @@ const StudentMain: React.FC = () => {
                 total: 0,
             }
         }
-
     }
 
     const columns: ProColumns<GithubIssueItem>[] = [
@@ -162,11 +151,9 @@ const StudentMain: React.FC = () => {
             valueEnum: {
                 "男": {
                     text: '男',
-    
                 },
                 "女": {
                     text: '女',
-    
                 },
             },
         },
@@ -237,7 +224,7 @@ const StudentMain: React.FC = () => {
 
     // 新增学生功能
     
-    const showDrawer = () => {
+    const showDrawer = async () => {
         setOpen(true);
     };
 
@@ -294,7 +281,7 @@ const StudentMain: React.FC = () => {
                     // onChange: (page) => console.log(page),
                 }}
                 dateFormatter="string"
-                headerTitle="班级列表"
+                headerTitle="学生列表"
                 toolBarRender={() => [
 
                     <div>
@@ -334,11 +321,12 @@ const StudentMain: React.FC = () => {
                         >
                             <Form layout="vertical" hideRequiredMark
                             form={form}
+                            // destroyOnClose = {true}
                             >
                                 <Row gutter={16}>
                                     <Col span={8}>
                                         <Form.Item
-                                            name="name"
+                                            name="username"
                                             label="姓名"
 
                                             rules={[{ required: true, message: 'Please enter user name' }]}
@@ -369,7 +357,7 @@ const StudentMain: React.FC = () => {
                                     </Col>
                                     <Col span={12}>
                                         <Form.Item
-                                            name="card"
+                                            name="idCard"
                                             label="身份证号"
                                             rules={[{ required: true, message: 'Please enter user name' }]}
                                         >
@@ -390,13 +378,13 @@ const StudentMain: React.FC = () => {
                                 <Row gutter={16}>
                                     <Col span={8}>
                                         <Form.Item
-                                            name="classname"
+                                            name="className"
                                             label="班级名称"
                                             rules={[{ required: true, message: 'Please choose the approver' }]}
                                         >
                                             <Select placeholder="请选择">
                                                 {Object.values(creatMapList).map( (item:any) => {
-                                                        return  <Option value={item._id}>{item.className}</Option>
+                                                        return  <Option value={item._id}>{item.name}</Option>
                                                 })  }
                                             </Select>
                                         </Form.Item>
