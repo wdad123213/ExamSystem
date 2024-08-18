@@ -247,3 +247,6 @@ export type UserUpdataParams = {
   username?: string
   avator?: string
 }
+
+// 创建角色
+export type RoleCreateParams = Record<'name' | 'value', string>

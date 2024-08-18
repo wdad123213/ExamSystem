@@ -12,7 +12,8 @@ import {
   RoleResponse,
   UserUpdataParams,
   userStateParams,
-  createTestType
+  createTestType,
+  RoleCreateParams
 } from "../types/api"
 
 export const loginApi = (params: LoginParams) => {
@@ -34,9 +35,6 @@ export const questionList = (type: string = '', subjectType: string = '', keywor
   const url = query ? `/question/list?${query}` : `/question/list`;
   return request.get(url);
 }
-
-
-
 
 export const searchList = (type: string = '') => {
   return request.get(`/question/type/list?type=${type}`)
@@ -127,6 +125,16 @@ export const userDelApi = (id: string) => {
 // 角色列表
 export const userRoleList = () => {
   return request.get<RoleResponse>('/role/list')
+}
+
+// 角色创建
+export const roleCreateApi = (params:RoleCreateParams) => {
+  return request.post<BaseResponse>('/role/create',params)
+}
+
+// 角色删除
+export const roleDelApi = (id:string) => {
+  return request.post<BaseResponse>('/role/remove',{ id })
 }
 
 // 上传头像
