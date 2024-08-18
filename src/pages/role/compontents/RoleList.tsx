@@ -5,7 +5,7 @@ import {RoleItemType} from "../../../types/api"
 interface PropsType {
   data: RoleItemType[]
   handleDel: (item: RoleItemType) => Promise<void>
-  showLoading: () => void
+  showLoading: (item: RoleItemType) => void
 }
 
 const RoleList:React.FC<PropsType> = (props) => {
@@ -51,7 +51,7 @@ const RoleList:React.FC<PropsType> = (props) => {
       render: (_, row) => {
         return(
             <Space>
-              <Button type='primary' onClick={() => props.showLoading()}>分配角色</Button>
+              <Button type='primary' onClick={() => props.showLoading(row)}>分配角色</Button>
               <Button type='primary' danger onClick={() => props.handleDel(row)}>删除</Button>
             </Space>
         )

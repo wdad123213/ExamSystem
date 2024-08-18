@@ -250,3 +250,8 @@ export type UserUpdataParams = {
 
 // 创建角色
 export type RoleCreateParams = Record<'name' | 'value', string>
+
+export type roleUpdataParams = {
+  id: string
+  permission: string[]
+}

@@ -12,6 +12,8 @@ const Role:React.FC = () => {
   const [form] = Form.useForm<RoleCreateParams>()
   const [data,setData] = useState<RoleItemType[]>([])
   const [visibility, setVisibility] = React.useState<boolean>(false)
+  const [permission, setPermission] = useState<string[]>([])
+  const [curId, setCurId] = useState<string>('')
   // 获取角色列表
   const  getRoleList = async () => {
     const res = await userRoleList()
@@ -75,8 +77,10 @@ const Role:React.FC = () => {
   }
   
   // 打开抽屉
-  const showLoading = () => {
+  const showLoading = (item:RoleItemType) => {
     setVisibility(true)
+    setPermission(item.permission)
+    setCurId(item._id)
   }
   
   return (
@@ -86,11 +90,11 @@ const Role:React.FC = () => {
       </Button>
       <RoleList data={data} handleDel={handleDel} showLoading={showLoading}/>
       <Drawer closable destroyOnClose title={<p>分配角色</p>} placement="right" open={visibility} onClose={() => setVisibility(false)}>
-        <RoleTree />
+        <RoleTree permission={permission} id={curId} getRoleList={getRoleList} setVisibility={setVisibility}/>
       </Drawer>
       <Modal open={open} title='新增角色' onOk={handleOk} onCancel={handleCancel} okText="确认" cancelText="取消">
-              <RoleAddForm form={form}/>
-          </Modal>
+        <RoleAddForm form={form}/>
+      </Modal>
     </>
   )
 }

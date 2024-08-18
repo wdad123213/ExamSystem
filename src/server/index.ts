@@ -13,7 +13,7 @@ import {
   UserUpdataParams,
   userStateParams,
   createTestType,
-  RoleCreateParams
+  RoleCreateParams, roleUpdataParams
 } from "../types/api"
 
 export const loginApi = (params: LoginParams) => {
@@ -135,6 +135,11 @@ export const roleCreateApi = (params:RoleCreateParams) => {
 // 角色删除
 export const roleDelApi = (id:string) => {
   return request.post<BaseResponse>('/role/remove',{ id })
+}
+
+// 角色更新
+export const roleUpdataApi = (params: roleUpdataParams) => {
+  return request.post<BaseResponse>('/role/update',params)
 }
 
 // 上传头像
