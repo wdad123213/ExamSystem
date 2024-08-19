@@ -222,6 +222,7 @@ export type RoleItemType = {
   name: string
   permission: string[]
   value : string
+  _id: string
 }
 
 // 权限管理
