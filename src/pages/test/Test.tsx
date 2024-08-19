@@ -1,7 +1,7 @@
 import Item from './components/Item'
 const Test = () => {
     return (
-        <div>试题库
+        <div>
             <Item>
             </Item>
         </div>

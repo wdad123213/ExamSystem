@@ -153,3 +153,16 @@ export const createTestApi = (time:number, createDate:createTestType) => {
   return request.post(`/examination/create?${time}`, createDate)
 }
 
+//查询试卷列表
+export const testPaperListApi = (params: { name: string, creator: string, classify: string }) => {
+  let query = '';
+  if (params.name) query += `name=${params?.name}&`;
+  if (params.creator) query += `creator=${params.creator}&`;
+  if (params.classify) query += `classify=${params.classify}`;
+  if (query.endsWith('&')) {
+    query = query.slice(0, -1);
+  }
+  const url = query ? `/exam/list?${query}` : `/exam/list`;
+  return request.get(url)
+}
+

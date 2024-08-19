@@ -70,6 +70,7 @@ const QuestionItem: React.FC<{
     type: string;
     subjectType: string;
     keyword: string;
+    reset: () => void
 }> = (props) => {
     const domRef = useRef(null)
     const exportPDF = async (title: string, ref: HTMLDivElement) => {
@@ -223,11 +224,11 @@ const QuestionItem: React.FC<{
                     id: item.key,
                     question: row.question
                 };
-                console.log(row, params)
-                //把更改后的question和id调用接口
+                // console.log(row, params)
                 const res = await updateApi(params)
                 console.log(res)
                 setData(newData);
+                props.reset()
                 setEditingKey('');
             } else {
                 newData.push(row);
@@ -289,12 +290,11 @@ const QuestionItem: React.FC<{
                     <>
                         <Space
                             size='middle'>
-                            <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)} >
+                            <Button disabled={editingKey !== ''} onClick={() => edit(record)} >
                                 编辑
-                            </Typography.Link>
+                            </Button>
                             <Popconfirm
-                                title="Delete the task"
-                                description="确认删除此项吗?"
+                                title="确认删除此项吗?"
                                 icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
                                 okText='确定'
                                 cancelText='取消'

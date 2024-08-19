@@ -10,9 +10,9 @@ export interface BaseValuse<T> {
 }
 
 export interface BaseReturn<T> {
-  list:T
-  total:number
-  totalPage:number
+  list: T
+  total: number
+  totalPage: number
 }
 
 type Token = {
@@ -118,6 +118,7 @@ export type studentCreat = {
 }
 
 export interface UserListType {
+  classify: any;
   creator: string
   lastOnlineTime: number
   password: string
@@ -153,10 +154,10 @@ export type userStateParams = {
 }
 
 // 用户返回值
-type User ={
-  list:UserListType[]
-  total:number
-  totalPage:number
+type User = {
+  list: UserListType[]
+  total: number
+  totalPage: number
 }
 
 export type UserParams = {
@@ -167,19 +168,19 @@ export type UserParams = {
 }
 export type UserResponse = BaseValuse<User>
 // 创建考试
-export type createExam={
-  name?:string,
+export type createExam = {
+  name?: string,
   classify?: string,
   examId?: string,
   creator?: string,
-  group?:string,
-  examiner?:string,
-  startTime?: number|string,
-  endTime?:number|string,
-  createTime?:string|number,
-  status?:string
+  group?: string,
+  examiner?: string,
+  startTime?: number | string,
+  endTime?: number | string,
+  createTime?: string | number,
+  status?: string
 }
-export type examcheng ={
+export type examcheng = {
   classify?: string
   createTime?: number
   creator?: string
@@ -188,29 +189,30 @@ export type examcheng ={
   examiner?: string[]
   group?: null[]
   name?: string
-  questionsList?:{
-          answer:  string
-          classify: string
-          options:  string[]
-          question:  string
-          type:  string
-          __v: number
-          _id:  string}[],
+  questionsList?: {
+    answer: string
+    classify: string
+    options: string[]
+    question: string
+    type: string
+    __v: number
+    _id: string
+  }[],
   startTime?: number
   status?: number
   __v?: number
   _id?: string
-  key?:string
+  key?: string
 }
 // 创建考试
 export interface createTestType {
-  classify:string;
-  endTime:string|number;
-  examId:string;
-  examiner:string;
-  group:string;
-  name:string;
-  startTime:string|number;
+  classify: string;
+  endTime: string | number;
+  examId: string;
+  examiner: string;
+  group: string;
+  name: string;
+  startTime: string | number;
 }
 
 
@@ -221,7 +223,7 @@ export type RoleItemType = {
   disabled: boolean
   name: string
   permission: string[]
-  value : string
+  value: string
   __v: number
   _id: string
 }
@@ -246,4 +248,15 @@ export type UserUpdataParams = {
   sex?: string
   username?: string
   avator?: string
+}
+
+//试卷类型
+//name  classify  creator createTime
+export type testPaperListItem = {
+  type(type: any, subjectType: any, keyword: any): unknown;
+  name: string
+  classify: string
+  creator: string
+  createTime: string
+  questions: [string]
 }

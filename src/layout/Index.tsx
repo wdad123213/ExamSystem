@@ -147,7 +147,7 @@ const Index: React.FC<Props> = (prop) => {
   }
   return (
     <>
-      <Layout style={{height: '100vh'}}>
+      <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }} >
           <Top setCurpage={() => {
             setCurPage('/mine')

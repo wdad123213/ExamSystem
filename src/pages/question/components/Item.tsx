@@ -29,6 +29,9 @@ const Item: React.FC = () => {
   const go = () => {
     navigate('/addQuestions')
   }
+  const resetKeyword = () => {
+    setKeyword('');
+  };
   const getList = async (value: string = '') => {
     try {
       const res = await questionList(value);
@@ -79,6 +82,7 @@ const Item: React.FC = () => {
       getSubject();
     }
   }, [newClassify1])
+
   return (
     <div className={style.box}>
       <Space>
@@ -126,7 +130,7 @@ const Item: React.FC = () => {
         </div>
       </header>
       <main>
-        <QuestionItem type={type} subjectType={subjectType} keyword={keyword}>
+        <QuestionItem type={type} subjectType={subjectType} keyword={keyword} reset={resetKeyword}>
         </QuestionItem>
       </main>
     </div>
