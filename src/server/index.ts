@@ -9,7 +9,9 @@ import {
   UserParams,
   UserResponse,
   userStateParams,
-  createTestType
+  createTestType,
+  permissionUpdateType,
+  permissionCreateType
 } from "../types/api"
 
 export const loginApi = (params: LoginParams) => {
@@ -94,8 +96,6 @@ export const studentCreateApi = (time: number, params?: classParams) => {
   return request.post(`/student/create?${time}`, params)
 }
 
-
-
 // 用户信息
 export const userInfoApi = () => {
   return request.get('/user/info')
@@ -140,3 +140,22 @@ export const createTestApi = (time:number, createDate:createTestType) => {
   return request.post(`/examination/create?${time}`, createDate)
 }
 
+// 权限管理
+export const permissionListApi = () => {
+  return request.get(`/permission/list`)
+}
+
+// 权限保存
+export const permissionUpdateApi = (id: number, it: permissionUpdateType) => {
+  return request.post(`/permission/update`,{id , ...it})
+}
+
+// 权限删除
+export const permissionRemoveApi = (id: number) => {
+  return request.post(`/permission/remove`,{ id })
+}
+
+// 权限新增
+export const permissionCreate = (params: permissionCreateType) => {
+  return request.post(`/permission/create`, params)
+}

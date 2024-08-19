@@ -195,3 +195,45 @@ export interface createTestType {
   startTime:string|number;
 }
 
+// 权限管理
+export type TableListItem = {
+  _id: string;
+  key: number;
+  name: string;
+  routes: string;
+  type: string;
+  createdAt: string;
+};
+
+
+export type prsItem = {
+  children : string[],
+  createTime: number,
+  disabled: string,
+  isBtn: string,
+  name: string,
+  path: string,
+  pid: string 
+}
+
+export type permissionUpdateType = {
+  children: string[]
+  createTime: string
+  disabled: string
+  index: number
+  isBtn: string
+  name: string
+  path: string
+  pid: string
+  rowKey: string
+  __v: number
+  _id: string
+}
+
+export type permissionCreateType = {
+  disabled: string
+  isBtn: string
+  name: string
+  path: string
+  pid: string
+}

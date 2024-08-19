@@ -103,7 +103,7 @@ const StudentMain: React.FC = () => {
                 ...item,
             }))
 
-            const total = res.data.data?.total || <data className="length"></data>
+            const total = res.data.data?.total || data.length
             return {
                 data,
                 total,
