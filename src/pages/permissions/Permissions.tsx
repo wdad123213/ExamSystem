@@ -108,6 +108,15 @@ export default () => {
         }
     }
 
+        // 取消功能
+        const toCancel = async (v: any, i: any) => {
+            
+            // const res = await permissionRemoveApi(v)
+            // console.log(res)
+            console.log(111)
+            
+        }
+
     // 新增菜单功能
     const showDrawer = async () => {
         setOpen(true);
@@ -141,7 +150,8 @@ export default () => {
             editable={{
                 type: 'multiple',
                 onSave: toSave,
-                onDelete: toDel
+                onDelete: toDel,
+                onCancel: toCancel
             }}
             pagination={{
                 showQuickJumper: true,
