@@ -255,3 +255,20 @@ export type roleUpdataParams = {
   id: string
   permission: string[]
 }
+
+export type PermissionItem = {
+  _id: string,
+  name: string,
+  path: string,
+  disabled: boolean,
+  isBtn: boolean,
+  createTime: number,
+  __v: number,
+  pid?: string,
+  children : PermissionItem[]
+}
+
+export type PermissionList = {
+  list: PermissionItem[]
+}
+export type PermissionResponse = BaseValuse<PermissionList>

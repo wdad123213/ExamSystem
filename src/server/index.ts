@@ -13,7 +13,7 @@ import {
   UserUpdataParams,
   userStateParams,
   createTestType,
-  RoleCreateParams, roleUpdataParams
+  RoleCreateParams, roleUpdataParams, PermissionResponse
 } from "../types/api"
 
 export const loginApi = (params: LoginParams) => {
@@ -166,3 +166,7 @@ export const createTestApi = (time:number, createDate:createTestType) => {
   return request.post(`/examination/create?${time}`, createDate)
 }
 
+// 权限列表
+export const permissionListApi = () => {
+  return request.get<PermissionResponse>('/permission/list')
+}
